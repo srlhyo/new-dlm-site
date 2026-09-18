@@ -1,0 +1,59 @@
+---
+import { PACOTES, PERSONALIZADO, formatarPreco } from '../../data/pacotes.js';
+---
+<section class="sec linho pacotes" id="pacotes" aria-labelledby="pacotes-t">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><p class="ov">Pacotes de buffet</p><h2 id="pacotes-t" class="h2">Três medidas. Uma mesa que cresce.</h2></div>
+      <p class="texto">Do essencial ao serviço completo. Os preços são «desde»: o orçamento é feito para cada evento e, acima de 50 convidados, é sempre personalizado.</p>
+    </div>
+    <ul class="linhas" role="list">
+      {PACOTES.map((p, i) => (
+        <li class:list={['linha', { destaque: p.maisEscolhido }]}>
+          {p.maisEscolhido && <span class="selo">Mais escolhido</span>}
+          <h3 class="nome">{p.nome}</h3>
+          <div class="preco"><span class="cap">Desde</span><span class="num">{formatarPreco(p.preco)}</span></div>
+          <p class="meta">{p.detalhe}<br />{p.mesa} · {p.pecas}</p>
+          <p class="tag">{p.tagline}</p>
+          <a href={`/buffet-catering#${p.id}`} class="lnk">Ver o que inclui <span class="ar">→</span></a>
+        </li>
+      ))}
+      <li class="linha custom">
+        <h3 class="nome">{PERSONALIZADO.nome}</h3>
+        <div class="preco"><span class="cap">mais de</span><span class="num">50 <small>convidados</small></span></div>
+        <p class="meta">Não cabe em pacote fechado.</p>
+        <p class="tag">Orçamento à medida, calculado para o número exato de convidados.</p>
+        <a href="/pedir-orcamento" class="lnk">Pedir orçamento <span class="ar">→</span></a>
+      </li>
+    </ul>
+    <div class="nota-final">
+      <p class="texto">Todos incluem decoração da mesa, bebida não alcoólica em copos decorativos e água aromatizada como elemento decorativo.</p>
+      <a href="/buffet-catering#pacotes" class="lnk">Diga-nos quantos convidados e sugerimos o pacote <span class="ar">→</span></a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .linhas { display: flex; flex-direction: column; }
+  .linha { position: relative; display: grid; grid-template-columns: 1fr auto; gap: 8px 24px; padding: 24px 0; border-top: 1px solid #E6DCC6; align-items: center; }
+  .linha.destaque { background: #FFFDF4; border: 1px solid var(--ouro-suave); border-radius: 12px; padding: 28px 24px; margin: 8px 0; box-shadow: 0 8px 28px rgba(201, 168, 76, 0.18); }
+  .linha.custom { border-top: 1px dashed #D6C9A8; border-bottom: 1px dashed #D6C9A8; }
+  .selo { position: absolute; left: 24px; top: -13px; }
+  .nome { font-family: var(--font-display); font-weight: 400; font-size: 30px; line-height: 1.1; }
+  .preco { display: flex; flex-direction: column; align-items: flex-end; }
+  .preco .num { font-size: 30px; line-height: 1.1; }
+  .preco small { font-family: var(--font-sans); font-weight: 400; font-size: 14px; color: var(--tinta); }
+  .meta { grid-column: 1 / -1; font-size: 13px; line-height: 1.55; color: var(--tinta-suave); }
+  .tag { grid-column: 1 / -1; font-size: 15px; line-height: 1.5; }
+  .linha .lnk { grid-column: 1 / -1; }
+  .nota-final { margin-top: 32px; display: flex; flex-direction: column; gap: 8px; }
+  .nota-final .texto { font-size: 13px; }
+  @media (min-width: 1200px) {
+    .linha { grid-template-columns: minmax(150px, 216px) minmax(120px, 200px) minmax(150px, 260px) minmax(220px, 1fr) auto; gap: 32px; padding: 22px 24px; }
+    .linha .lnk { white-space: nowrap; }
+    .linha.destaque { padding: 26px 24px; }
+    .preco { align-items: flex-start; }
+    .meta, .tag, .linha .lnk { grid-column: auto; }
+    .nota-final { flex-direction: row; justify-content: space-between; align-items: center; padding: 0 24px; }
+  }
+</style>

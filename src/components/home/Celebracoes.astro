@@ -1,0 +1,68 @@
+---
+import Plate from '../Plate.astro';
+import { CELEBRACOES } from '../../data/site.js';
+import casSala from '../../assets/img/ev_casamento_sala.jpg';
+import casBolo from '../../assets/img/ev_casamento.jpg';
+import bat from '../../assets/img/ev_batizado.jpg';
+import aniv from '../../assets/img/ev_aniversario.jpg';
+import anivKids from '../../assets/img/ev_aniversario_kids.jpg';
+import noiv from '../../assets/img/ev_noivado.jpg';
+import cha from '../../assets/img/ev_cha.jpg';
+import outra from '../../assets/img/ev_outra.jpg';
+// Cada celebração: uma imagem grande e, quando existe, uma pequena que a sobrepõe.
+const vistas = {
+  casamento: { g: casSala, p: casBolo, cap: 'Casamento · sala em bordeaux', sub: 'Mesas compridas, velas e bolo com flores.' },
+  batizado: { g: bat, cap: 'Batizado · bolo branco', sub: 'Tons claros e flores azuis.' },
+  aniversario: { g: aniv, p: anivKids, cap: 'Aniversário · painel floral', sub: 'Do painel de flores à quinta de cartão.' },
+  noivado: { g: noiv, cap: 'Noivado · mesa junto ao terraço', sub: 'Sinalética espelhada e toalha branca.' },
+  'cha-de-bebe': { g: cha, cap: 'Chá de bebé · rosa e azul', sub: 'Mesa de pequeno-almoço com bolo e chá.' },
+  outra: { g: outra, cap: 'Jantar · preto e ouro', sub: 'Mesa redonda, guardanapos pretos, sousplats dourados.' },
+};
+---
+<section class="sec celeb" id="celebracoes" style="overflow-x: clip;" aria-labelledby="celeb-t" data-seletor="hover" data-ativo="aniversario">
+  <div class="wrap grid">
+    <div class="conteudo">
+      <p class="ov">Celebrações</p>
+      <h2 id="celeb-t" class="h2">Casamentos, batizados, aniversários, e tudo o que se celebra à mesa.</h2>
+      <p class="texto">Cada celebração tem o seu tom. A forma como trabalhamos é a mesma: ouvir, propor, compor, servir.</p>
+      <div role="group" aria-label="Celebração" class="lista">
+        {CELEBRACOES.map((c) => (
+          <button type="button" data-item={c.id} aria-pressed={c.id === 'aniversario' ? 'true' : 'false'}><span class="dot"></span><span class="nome">{c.plural}</span></button>
+        ))}
+      </div>
+    </div>
+    <div class="palco">
+      {CELEBRACOES.map((c) => { const v = vistas[c.id]; return (
+        <div class="vista" data-vista={c.id} hidden={c.id !== 'aniversario'}>
+          <Plate src={v.g} alt={v.cap} ratio="10 / 13" pos="50% 40%" class="grande" sizes="(min-width: 1024px) 400px, 70vw" />
+          {v.p && <Plate src={v.p} alt="" ratio="4 / 5" class="pequeno" lift sombra sizes="(min-width: 1024px) 240px, 40vw" />}
+          <div class="legenda"><span class="cap">{v.cap}</span><p>{v.sub} A imagem muda com a celebração escolhida.</p></div>
+        </div>
+      ); })}
+    </div>
+  </div>
+</section>
+
+<style>
+  .grid { display: grid; gap: 40px; }
+  .conteudo { display: flex; flex-direction: column; gap: 18px; }
+  .conteudo .h2 { max-width: 16ch; }
+  .conteudo .texto { max-width: 440px; }
+  .lista { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .lista button { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1.5px solid var(--ouro-suave); background: var(--papel); font-size: 14px; color: var(--tinta); }
+  .lista button[aria-pressed="true"] { border-color: var(--ouro); font-weight: 600; }
+  .vista { position: relative; display: grid; grid-template-columns: 70% 1fr; gap: 12px; align-items: end; }
+  .vista :global(.grande) { grid-column: 1; grid-row: 1; }
+  .vista :global(.pequeno) { grid-column: 2; grid-row: 1; margin-left: -30%; margin-bottom: 12%; z-index: 2; }
+  .vista .legenda { grid-column: 1 / -1; }
+  @media (min-width: 1024px) {
+    .grid { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 80px; align-items: start; }
+    .lista { flex-direction: column; gap: 0; }
+    .lista button { border: 0; border-top: 1px solid var(--borda); border-radius: 0; background: transparent; padding: 0; min-height: 58px; font-family: var(--font-display); font-size: 28px; gap: 18px; }
+    .lista button:last-child { border-bottom: 1px solid var(--borda); }
+    .lista button[aria-pressed="true"] { font-weight: 500; }
+    .vista { grid-template-columns: minmax(0, 400px) minmax(120px, 1fr); column-gap: 0; }
+    .vista :global(.pequeno) { width: min(240px, calc(100% + 60px)); margin-left: -60px; margin-bottom: -40px; align-self: end; }
+    .vista .legenda { grid-column: 1; margin-top: 16px; }
+  }
+</style>

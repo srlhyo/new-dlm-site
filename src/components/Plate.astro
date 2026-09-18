@@ -1,0 +1,13 @@
+---
+// Um «prato»: fotografia real com corte controlado. Gera srcset/webp no build.
+import { Image } from 'astro:assets';
+const {
+  src, alt = '', class: cls = '', ratio, pos = '50% 50%', widths = [420, 720, 1080, 1440], sizes = '(min-width: 1024px) 45vw, 100vw',
+  loading = 'lazy', lift = false, sombra = false, style = '', priority = false,
+} = Astro.props;
+const r = ratio ? `aspect-ratio:${ratio};` : '';
+---
+<div class:list={['plate', cls, { lift, sombra }]} style={`${r}${style}`}>
+  <Image src={src} alt={alt} widths={widths} sizes={sizes} loading={priority ? 'eager' : loading} decoding={priority ? 'sync' : 'async'} fetchpriority={priority ? 'high' : undefined} style={`object-position:${pos};`} />
+  <slot />
+</div>

@@ -1,0 +1,34 @@
+---
+import Icons from '../Icons.astro';
+const itens = [
+  ['Decoração da mesa', 'A mesa chega composta, seja qual for o pacote.'],
+  ['Bebida não alcoólica', 'Servida em copos decorativos.'],
+  ['Água aromatizada', 'Como elemento decorativo da mesa.'],
+];
+---
+<section class="sec linho incl" id="todos" aria-labelledby="incl-t">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><p class="ov">Incluído</p><h2 id="incl-t" class="h2">Em todos os pacotes.</h2></div>
+      <p class="texto">Cortesia da casa, em qualquer medida.</p>
+    </div>
+    <div class="cols">
+      {itens.map(([t, d], i) => (
+        <div class="col"><span class="check"><Icons name="check" /></span><div><strong>{t}</strong><p>{d}</p></div></div>
+      ))}
+      <div class="col premium">
+        <div><span class="cap dourado">Só no Premium</span><strong>Equipa de serviço</strong><p>2 elementos de staff para serviço e reposição durante o evento.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cols { display: grid; gap: 24px; }
+  .col { display: flex; gap: 10px; align-items: flex-start; border-top: 1px solid #E6DCC6; padding-top: 18px; }
+  .col strong { display: block; font-weight: 600; font-size: 16px; }
+  .col p { margin-top: 6px; font-size: 14px; line-height: 1.55; color: var(--tinta-suave); }
+  .premium { border-top-color: var(--ouro-suave); }
+  .dourado { display: block; color: var(--ouro-texto); margin-bottom: 8px; }
+  @media (min-width: 900px) { .cols { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 40px; } }
+</style>

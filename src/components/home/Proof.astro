@@ -1,0 +1,44 @@
+---
+import Plate from '../Plate.astro';
+import bordeaux from '../../assets/img/proof_bordeaux.jpg';
+import preto from '../../assets/img/proof_preto.jpg';
+import rosa from '../../assets/img/proof_rosa.jpg';
+import copo from '../../assets/img/proof_copo.jpg';
+import linho from '../../assets/img/proof_linho.jpg';
+const itens = [
+  { src: bordeaux, cap: 'Bordeaux · Mesa Posta', sub: 'Cartão de agradecimento em cada lugar', off: 0 },
+  { src: preto, cap: 'Preto & ouro · Mesa Posta', sub: 'Jantar, sousplat dourado', off: 44 },
+  { src: rosa, cap: 'Rosa · Mesa Posta', sub: 'Mesa redonda, guardanapo em leque', off: 16 },
+  { src: copo, cap: 'Copo assinado · Buffet', sub: 'Sobremesa de copo com selo da casa', off: 60 },
+  { src: linho, cap: 'Linho & amarelo · Mesa Posta', sub: 'Almoço ao ar livre, base de ráfia', off: 28 },
+];
+---
+<section class="sec prova" aria-labelledby="prova-t">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><p class="ov">Trabalho real</p><h2 id="prova-t" class="h2">A mesma casa, outra cor de cada vez.</h2></div>
+      <p class="texto">A estrutura não muda: composição, cuidado, serviço. A cor vem de cada celebração, e a fotografia mostra-a como é, sem filtro de catálogo.</p>
+    </div>
+    <ul class="faixa" role="list">
+      {itens.map((it, i) => (
+        <li class:list={['reveal', `d${Math.min(i, 3)}`]} style={`--off:${it.off}px`}>
+          <Plate src={it.src} alt="" ratio="3 / 4" lift widths={[240, 480, 720]} sizes="(min-width: 1024px) 240px, 62vw" />
+          <div class="legenda"><span class="cap" set:html={it.cap} /><p>{it.sub}</p></div>
+        </li>
+      ))}
+    </ul>
+    <p class="dica texto">Deslize para ver as cinco paletas.</p>
+  </div>
+</section>
+
+<style>
+  .faixa { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: var(--gutter); padding-bottom: 8px; margin-inline: calc(-1 * var(--gutter)); padding-inline: var(--gutter); scrollbar-width: none; }
+  .faixa::-webkit-scrollbar { display: none; }
+  .faixa li { flex: 0 0 62vw; max-width: 240px; scroll-snap-align: start; }
+  .dica { margin-top: 12px; font-size: 12px; }
+  @media (min-width: 1024px) {
+    .faixa { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 24px; overflow: visible; margin-inline: 0; padding-inline: 0; }
+    .faixa li { max-width: none; flex: none; transform: translateY(var(--off)); }
+    .dica { display: none; }
+  }
+</style>

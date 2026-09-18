@@ -1,0 +1,20 @@
+---
+import Base from '../layouts/Base.astro';
+import { Image } from 'astro:assets';
+import pearls from '../assets/img/pearls.png';
+---
+<Base title="Página não encontrada" semBarra>
+  <section class="sec">
+    <div class="wrap centro">
+      <Image src={pearls} alt="" width={96} height={37} aria-hidden="true" />
+      <p class="ov">404</p>
+      <h1 class="h2">Esta mesa ainda não está posta.</h1>
+      <p class="lead">A página que procura não existe ou mudou de lugar.</p>
+      <div class="cta"><a href="/" class="btn">Voltar ao início</a><a href="/pedir-orcamento" class="btn-o">Pedir orçamento</a></div>
+    </div>
+  </section>
+</Base>
+<style>
+  .centro { display: flex; flex-direction: column; align-items: flex-start; gap: 18px; max-width: 560px; min-height: 50vh; }
+  .cta { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 8px; }
+</style>

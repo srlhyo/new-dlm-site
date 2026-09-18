@@ -1,0 +1,56 @@
+---
+import Plate from '../Plate.astro';
+import espaco from '../../assets/img/tr_espaco.jpg';
+import prep from '../../assets/img/tr_preparacao.jpg';
+import comp from '../../assets/img/tr_composicao.jpg';
+import evento from '../../assets/img/tr_evento.jpg';
+const quadros = [
+  { src: espaco, t: 'O espaço', s: 'Um terraço vazio, de manhã.' },
+  { src: prep, t: 'A preparação', s: 'As mesas a ganhar forma.' },
+  { src: comp, t: 'A composição', s: 'Flores, arco, luz.' },
+  { src: evento, t: 'O evento', s: 'À noite, o bolo.' },
+];
+---
+<section class="sec transf" id="transformacao" aria-labelledby="transf-t" data-transform="fila" data-autoplay="scroll">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><p class="ov">Transformação</p><h2 id="transf-t" class="h2">De um espaço vazio a uma celebração.</h2></div>
+      <p class="texto">Chegamos com tudo. Montamos e compomos. No fim, recolhemos, e o espaço volta a ser o que era.</p>
+    </div>
+    <ol class="quadros" role="list">
+      {quadros.map((q, i) => (
+        <li data-quadro={q.t} class:list={{ 'is-ativo': i === 0 }}>
+          <Plate src={q.src} alt={q.s} ratio="14 / 19" pos="50% 40%" sizes="(min-width: 1024px) 280px, 72vw" />
+          <div class="legenda"><span class="cap"><span class="n">0{i + 1}</span> {q.t}</span><p>{q.s}</p></div>
+        </li>
+      ))}
+    </ol>
+    <div class="barra">
+      <div class="calha"><div class="fill" data-fill></div></div>
+      <input type="range" min="0" max={quadros.length - 1} value="0" step="1" aria-label="Momento da transformação" aria-valuetext="O espaço" />
+      <p class="texto dica">Arraste a pérola ou deslize a página: de quadro em quadro, do vazio ao evento. <span class="sr-only" data-rotulo aria-live="polite"></span></p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .quadros { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: var(--gutter); margin-inline: calc(-1 * var(--gutter)); padding-inline: var(--gutter); scrollbar-width: none; }
+  .quadros::-webkit-scrollbar { display: none; }
+  .quadros li { flex: 0 0 72vw; max-width: 300px; scroll-snap-align: start; }
+  .quadros li :global(.plate) { opacity: 0.78; transition: opacity 0.4s var(--ease); }
+  .quadros li.is-ativo :global(.plate) { opacity: 1; }
+  .legenda .n { color: var(--ouro-texto); margin-right: 6px; }
+  .barra { position: relative; margin-top: 28px; }
+  .calha { height: 4px; border-radius: 999px; background: var(--calha); overflow: hidden; }
+  .fill { height: 100%; width: 0; border-radius: 999px; background: linear-gradient(to right, var(--ouro-suave), var(--ouro)); transition: width 0.7s var(--ease); }
+  input[type="range"] { position: absolute; left: 0; top: -20px; width: 100%; height: 44px; margin: 0; appearance: none; background: transparent; cursor: pointer; }
+  input[type="range"]::-webkit-slider-thumb { appearance: none; width: 22px; height: 22px; border-radius: 50%; background: radial-gradient(circle at 34% 30%, #FFFFFF 0%, #F6EFDD 28%, #E3D5B4 62%, #B9A47A 100%); box-shadow: 0 1px 2px rgba(0,0,0,0.12), inset 0 -1px 2px rgba(120,95,40,0.25); border: 0; }
+  input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius: 50%; background: radial-gradient(circle at 34% 30%, #FFFFFF 0%, #F6EFDD 28%, #E3D5B4 62%, #B9A47A 100%); box-shadow: 0 1px 2px rgba(0,0,0,0.12), inset 0 -1px 2px rgba(120,95,40,0.25); border: 0; }
+  input[type="range"]::-moz-range-track { background: transparent; }
+  .dica { margin-top: 30px; font-size: 13px; }
+  @media (min-width: 1024px) {
+    .quadros { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; overflow: visible; margin-inline: 0; padding-inline: 0; }
+    .quadros li { max-width: none; flex: none; }
+  }
+</style>
+

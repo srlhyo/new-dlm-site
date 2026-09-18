@@ -1,0 +1,73 @@
+---
+import { NAV, CASA, whatsappHref } from '../data/site.js';
+import Icons from './Icons.astro';
+import logo from '../assets/img/logo.png';
+import { Image } from 'astro:assets';
+const path = Astro.url.pathname.replace(/(?:\/index)?\.html$/, '').replace(/\/$/, '') || '/';
+const { noite = false } = Astro.props;
+---
+<header class:list={['topo', { noite }]}>
+  <div class="wrap topo-in">
+    <a href="/" class="marca" aria-label="Do Luxo à Mesa — início">
+      <Image src={logo} alt="Do Luxo à Mesa, by Luxury Events" width={64} height={81} densities={[1, 2, 3]} loading="eager" />
+    </a>
+    <nav class="nav" aria-label="Principal">
+      {NAV.map((l) => <a href={l.href} aria-current={path === l.href ? 'page' : undefined}>{l.label}</a>)}
+    </nav>
+    <div class="acoes">
+      {CASA.whatsapp && <a href={whatsappHref()} class="lnk wa" rel="noopener"><Icons name="whatsapp" /> <span>WhatsApp</span></a>}
+      <a href="/pedir-orcamento" class="btn btn-sm">Pedir orçamento</a>
+      <button type="button" class="menu-btn" aria-expanded="false" aria-controls="menu-movel" aria-label="Abrir menu">
+        <span class="ic-open"><Icons name="menu" size={22} /></span><span class="ic-close" hidden><Icons name="close" size={22} /></span>
+      </button>
+    </div>
+  </div>
+  <div id="menu-movel" class="menu-movel" hidden>
+    <nav aria-label="Principal (telemóvel)">
+      {NAV.map((l) => <a href={l.href}>{l.label}</a>)}
+      <a href="/pedir-orcamento" class="destaque">Pedir orçamento</a>
+      {CASA.whatsapp && <a href={whatsappHref()} rel="noopener">WhatsApp</a>}
+    </nav>
+  </div>
+</header>
+
+<style>
+  .topo { position: sticky; top: 0; z-index: 50; background: rgba(250, 250, 248, 0.92); backdrop-filter: blur(10px); border-bottom: 1px solid transparent; transition: border-color 0.2s; }
+  .topo.is-scrolled { border-bottom-color: var(--borda); }
+  .topo-in { display: flex; align-items: center; justify-content: space-between; gap: 24px; height: var(--nav-h); }
+  .marca img { height: 56px; width: auto; }
+  .nav { display: none; gap: 32px; align-items: center; }
+  .nav a { font-weight: 500; font-size: 14px; color: var(--tinta); text-decoration: none; padding: 12px 0; border-bottom: 1px solid transparent; transition: border-color 0.16s; white-space: nowrap; }
+  .acoes .btn, .wa { white-space: nowrap; }
+  .nav a:hover, .nav a[aria-current="page"] { border-bottom-color: var(--ouro); }
+  .acoes { display: flex; align-items: center; gap: 14px; }
+  .wa { color: var(--tinta); font-weight: 500; display: none; }
+  .menu-btn { width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; color: var(--tinta); }
+  .menu-movel { border-top: 1px solid var(--borda); background: var(--creme); }
+  .menu-movel nav { display: flex; flex-direction: column; padding: 8px var(--gutter) 20px; }
+  .menu-movel a { display: block; padding: 14px 0; font-family: var(--font-display); font-size: 24px; color: var(--tinta); text-decoration: none; border-bottom: 1px solid var(--borda); }
+  .menu-movel a.destaque { color: var(--ouro-texto); }
+  @media (max-width: 599px) { .acoes .btn { display: none; } }
+  @media (min-width: 1024px) {
+    .nav { display: flex; gap: 22px; } .menu-btn, .menu-movel { display: none !important; }
+    .marca img { height: 64px; }
+  }
+  @media (min-width: 1200px) { .nav { gap: 32px; } .wa { display: inline-flex; } }
+</style>
+
+<script>
+  const topo = document.querySelector('.topo');
+  const btn = topo?.querySelector('.menu-btn');
+  const menu = document.getElementById('menu-movel');
+  btn?.addEventListener('click', () => {
+    const open = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', String(!open));
+    btn.setAttribute('aria-label', open ? 'Abrir menu' : 'Fechar menu');
+    if (menu) menu.hidden = open;
+    btn.querySelector('.ic-open')?.toggleAttribute('hidden', !open);
+    btn.querySelector('.ic-close')?.toggleAttribute('hidden', open);
+  });
+  const onScroll = () => topo?.classList.toggle('is-scrolled', window.scrollY > 8);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+</script>

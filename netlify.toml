@@ -1,0 +1,9 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# As variáveis PUBLIC_* definem-se no painel do Netlify (Site configuration → Environment variables);
+# ver .env.example. Os cabeçalhos de cache vivem em public/_headers.

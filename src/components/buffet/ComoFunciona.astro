@@ -1,0 +1,29 @@
+---
+const passos = [
+  ['O pedido', 'Tipo de evento, data, local, convidados e serviços. Quatro passos curtos, sem perguntar quanto quer gastar.'],
+  ['A proposta', 'Com o pacote sugerido, o que inclui, o que é opcional e o que fica por decidir.'],
+  ['Os ajustes', 'Menu, quantidades, horários, cor da mesa. No WhatsApp, sem pressa.'],
+  ['O dia', 'Montamos a mesa e, no fim, recolhemos. No Premium, a equipa serve e repõe durante o evento.'],
+];
+---
+<section class="sec como" id="como" aria-labelledby="como-t">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><p class="ov">Como funciona</p><h2 id="como-t" class="h2">Do pedido ao último prato.</h2></div>
+    </div>
+    <ol class="passos">
+      {passos.map(([t, d], i) => (
+        <li><span class="n">0{i + 1}</span><strong>{t}</strong><p>{d}</p></li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .passos { display: grid; gap: 24px; }
+  .passos li { border-top: 1px solid var(--borda); padding-top: 18px; }
+  .n { display: block; font-family: var(--font-display); font-size: 28px; color: var(--ouro-texto); }
+  .passos strong { display: block; margin-top: 10px; font-weight: 600; font-size: 16px; }
+  .passos p { margin-top: 8px; font-size: 14px; line-height: 1.55; color: var(--tinta-suave); }
+  @media (min-width: 900px) { .passos { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 40px; } }
+</style>

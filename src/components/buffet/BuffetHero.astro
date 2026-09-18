@@ -1,0 +1,66 @@
+---
+import Plate from '../Plate.astro';
+import Icons from '../Icons.astro';
+import clipMp4 from '../../assets/video/buffet.mp4';
+import alto from '../../assets/img/buffet_alto.jpg';
+import copos from '../../assets/img/buffet_copos.jpg';
+---
+<section class="bhero" data-hero aria-labelledby="bhero-t">
+  <div class="wrap grid">
+    <div class="texto-col">
+      <p class="ov reveal">Buffet &amp; Catering</p>
+      <h1 id="bhero-t" class="h1 reveal d1">Uma mesa de buffet, composta em níveis.</h1>
+      <p class="lead reveal d2">Mini salgados, doces, saladas e bebidas apresentados em mesa própria, com decoração incluída, copos decorativos e água aromatizada. O cliente escolhe a medida; nós compomos, montamos e, no Premium, servimos.</p>
+      <div class="cta reveal d2"><a href="/pedir-orcamento" class="btn">Pedir orçamento</a><a href="#pacotes" class="lnk">Ver os pacotes <span class="ar">→</span></a></div>
+      <div class="programa reveal d3">
+        <div class="hl"></div>
+        <nav aria-label="Nesta página">
+          <a href="#todos" class="cap">Incluído em todos</a><a href="#pacotes" class="cap">Os pacotes</a><a href="#mais50" class="cap">Mais de 50</a><a href="#como" class="cap">Como funciona</a>
+        </nav>
+      </div>
+    </div>
+    <div class="foto-col">
+      <div class="grande unveil">
+        <Plate src={alto} alt="Mesa de buffet noturna: copos de sobremesa em cubos brancos sobre veludo verde" pos="50% 40%" priority sizes="(min-width: 1024px) 420px, 100vw" />
+        <video class="ambiente" data-ambiente muted loop playsinline preload="none" aria-hidden="true" tabindex="-1">
+          <source src={clipMp4} type="video/mp4" />
+        </video>
+        <button type="button" class="video-tag" data-video-toggle aria-pressed="true" aria-label="Pausar o vídeo de ambiente"><Icons name="play" size={10} /> <span data-video-label>Vídeo · 8 s · sem som</span></button>
+      </div>
+      <figure class="pequeno reveal d3">
+        <Plate src={copos} alt="Copos de sobremesa com frutos vermelhos" ratio="13 / 15" lift sombra sizes="(min-width: 1024px) 260px, 40vw" />
+        <figcaption class="legenda"><span class="cap">Mesa noturna · cubos brancos, veludo verde</span></figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<style>
+  .bhero { padding-top: clamp(24px, 4vw, 56px); overflow-x: clip; }
+  .grid { display: grid; gap: 32px; }
+  .texto-col { display: flex; flex-direction: column; gap: 22px; }
+  .h1 { max-width: 14ch; }
+  .lead { max-width: 500px; }
+  .cta { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 26px; }
+  .programa { max-width: 460px; }
+  .programa nav { display: flex; flex-wrap: wrap; gap: 12px 28px; margin-top: 18px; }
+  .programa a { text-decoration: none; min-height: 44px; display: inline-flex; align-items: center; }
+  .grande { position: relative; aspect-ratio: 4 / 5; }
+  .grande :global(.plate) { position: absolute; inset: 0; }
+  .ambiente { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 40%; opacity: 0; transition: opacity 0.9s var(--ease); }
+  .ambiente.is-playing { opacity: 1; }
+  .video-tag { left: 20px; bottom: 20px; }
+  .pequeno { width: 44%; max-width: 260px; margin: -22% var(--gutter) 0 auto; position: relative; z-index: 3; }
+  @media (min-width: 1024px) {
+    .bhero { padding-top: 0; }
+    .grid { grid-template-columns: minmax(0, 6fr) minmax(0, 6fr); gap: 40px; }
+    .texto-col { padding: 96px 0 64px; justify-content: center; }
+    .foto-col { position: relative; padding: 40px 0 80px 40px; }
+    .grande { width: min(420px, 100%); aspect-ratio: 7 / 10; }
+    .pequeno { position: absolute; right: 0; bottom: 20px; width: 260px; margin: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) { .ambiente { display: none; } }
+</style>
+<script>
+  document.querySelectorAll('video.ambiente').forEach((v) => v.addEventListener('playing', () => v.classList.add('is-playing')));
+</script>

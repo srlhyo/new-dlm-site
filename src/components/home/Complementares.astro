@@ -1,0 +1,74 @@
+---
+import Plate from '../Plate.astro';
+import welcome from '../../assets/img/comp_welcome.jpg';
+import bolo from '../../assets/img/comp_bolo.jpg';
+import memorias from '../../assets/img/comp_memorias.jpg';
+import bar from '../../assets/img/comp_bar.jpg';
+import bebidas from '../../assets/img/comp_bebidas.jpg';
+const itens = [
+  { id: 'bolo', nome: 'Mesa de bolo' },
+  { id: 'memorias', nome: 'Mesa de memórias' },
+  { id: 'bar', nome: 'Bar & cocktails' },
+  { id: 'welcome', nome: 'Welcome Drink' },
+  { id: 'bebidas', nome: 'Balcões de comida e bebida' },
+  { id: 'outros', nome: 'Outros elementos' },
+];
+---
+<section class="sec comp" id="servicos" aria-labelledby="comp-t" data-seletor="hover" data-ativo="welcome">
+  <span class="ghost" aria-hidden="true">03</span>
+  <div class="wrap z grid">
+    <div class="conteudo">
+      <p class="ov">Serviços complementares</p>
+      <h2 id="comp-t" class="h2">Uma celebração compõe-se de várias mesas.</h2>
+      <p class="texto">Escolhe-se o que faz sentido para o evento. Nós tratamos de as fazer conversar entre si: na cor, na altura, na luz.</p>
+      <div role="group" aria-label="Serviços complementares" class="lista">
+        {itens.map((it, i) => (
+          <button type="button" data-item={it.id} aria-pressed={it.id === 'welcome' ? 'true' : 'false'}>
+            <span class="cap n">0{i + 1}</span><span class="nome">{it.nome}</span><span class="dot"></span>
+          </button>
+        ))}
+      </div>
+      <p class="texto dica">Passe o rato ou toque num item: a mesa correspondente avança; as outras recuam.</p>
+    </div>
+    <div class="planta" aria-hidden="false">
+      <figure class="pl pl-welcome reveal"><Plate src={welcome} alt="Balcão branco com a inscrição Welcome Drink" ratio="15 / 19" pos="50% 60%" lift sizes="(min-width: 1024px) 300px, 46vw" /><figcaption class="legenda"><span class="cap">Welcome Drink</span></figcaption></figure>
+      <figure class="pl pl-bolo reveal d1"><Plate src={bolo} alt="Mesa de bolo com donuts e velas" ratio="24 / 31" lift sizes="(min-width: 1024px) 240px, 40vw" /><figcaption class="legenda"><span class="cap">Mesa de bolo</span></figcaption></figure>
+      <figure class="pl pl-memorias reveal d2"><Plate src={memorias} alt="Mesa de memórias com amêndoas e moldura" ratio="18 / 25" lift sizes="(min-width: 1024px) 180px, 40vw" /><figcaption class="legenda"><span class="cap">Mesa de memórias</span></figcaption></figure>
+      <figure class="pl pl-bar reveal d2"><Plate src={bar} alt="Dispensador de cristal e copos" ratio="22 / 29" lift sizes="(min-width: 1024px) 220px, 40vw" /><figcaption class="legenda"><span class="cap">Bar &amp; cocktails</span></figcaption></figure>
+      <figure class="pl pl-bebidas reveal d3"><Plate src={bebidas} alt="Balcão de bebidas com cocktails cor-de-rosa" ratio="23 / 32" lift sizes="(min-width: 1024px) 230px, 46vw" /><figcaption class="legenda"><span class="cap">Balcão de bebidas</span></figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<style>
+  .comp { overflow: clip; }
+  .grid { display: grid; gap: 40px; }
+  .conteudo { display: flex; flex-direction: column; gap: 18px; }
+  .conteudo .h2 { max-width: 13ch; }
+  .conteudo .texto { max-width: 420px; }
+  .lista { display: flex; flex-direction: column; margin-top: 8px; }
+  .lista button { display: flex; align-items: center; gap: 18px; min-height: 54px; width: 100%; border-top: 1px solid var(--borda); text-align: left; color: var(--tinta); }
+  .lista button:last-child { border-bottom: 1px solid var(--borda); }
+  .lista .n { width: 28px; color: var(--ouro-texto); }
+  .lista .nome { font-size: 18px; flex: 1; }
+  .lista button[aria-pressed="true"] .nome { font-weight: 600; }
+  .dica { font-size: 13px; }
+  .planta { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
+  .pl { transition: transform 0.32s var(--ease), opacity 0.32s var(--ease); }
+  .pl :global(.plate) { transition: outline-color 0.2s, opacity 0.32s var(--ease); outline: 1.5px solid transparent; outline-offset: 6px; }
+  .comp[data-ativo] .pl :global(.plate) { opacity: 0.72; }
+  .comp[data-ativo="welcome"] .pl-welcome :global(.plate), .comp[data-ativo="bolo"] .pl-bolo :global(.plate), .comp[data-ativo="memorias"] .pl-memorias :global(.plate), .comp[data-ativo="bar"] .pl-bar :global(.plate), .comp[data-ativo="bebidas"] .pl-bebidas :global(.plate), .comp[data-ativo="outros"] .pl :global(.plate) { opacity: 1; }
+  .comp[data-ativo="welcome"] .pl-welcome, .comp[data-ativo="bolo"] .pl-bolo, .comp[data-ativo="memorias"] .pl-memorias, .comp[data-ativo="bar"] .pl-bar, .comp[data-ativo="bebidas"] .pl-bebidas { transform: translateY(-6px); }
+  .comp[data-ativo="welcome"] .pl-welcome :global(.plate), .comp[data-ativo="bolo"] .pl-bolo :global(.plate), .comp[data-ativo="memorias"] .pl-memorias :global(.plate), .comp[data-ativo="bar"] .pl-bar :global(.plate), .comp[data-ativo="bebidas"] .pl-bebidas :global(.plate) { outline-color: var(--ouro); }
+  .pl-bolo { margin-top: 18%; }
+  .pl-memorias { margin-top: -12%; }
+  @media (min-width: 1024px) {
+    .grid { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 80px; }
+    .planta { grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 20px; }
+    .pl-welcome { grid-column: 1 / span 5; grid-row: 1; margin-top: 20px; }
+    .pl-bolo { grid-column: 7 / span 4; grid-row: 1; margin-top: 0; }
+    .pl-bar { grid-column: 1 / span 4; grid-row: 2; margin-top: 30px; }
+    .pl-bebidas { grid-column: 6 / span 4; grid-row: 2; margin-top: -60px; }
+    .pl-memorias { grid-column: 10 / span 3; grid-row: 2; margin-top: -40px; }
+  }
+</style>

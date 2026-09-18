@@ -1,0 +1,327 @@
+---
+import Base from '../layouts/Base.astro';
+import Icons from '../components/Icons.astro';
+import { Image } from 'astro:assets';
+import { CASA, CELEBRACOES, whatsappHref } from '../data/site.js';
+import { PACOTES, PERSONALIZADO } from '../data/pacotes.js';
+import { SERVICOS_PRINCIPAIS, COMPLEMENTARES, OPCOES_LOCAL, CANAIS } from '../data/servicos.js';
+import logo from '../assets/img/logo.png';
+import pearls from '../assets/img/pearls.png';
+import qCasamento from '../assets/img/q_casamento.jpg';
+import qBatizado from '../assets/img/q_batizado.jpg';
+import qAniversario from '../assets/img/q_aniversario.jpg';
+import qNoivado from '../assets/img/q_noivado.jpg';
+import qCha from '../assets/img/q_cha.jpg';
+import qOutra from '../assets/img/q_outra.jpg';
+const fotos = { casamento: qCasamento, batizado: qBatizado, aniversario: qAniversario, noivado: qNoivado, 'cha-de-bebe': qCha, outra: qOutra };
+const env = import.meta.env;
+const CAPS = [
+  ['O evento', 'Que celebração é'],
+  ['Data e local', 'Quando e onde'],
+  ['Serviços', 'O que interessa'],
+  ['Sobre si', 'Como contactamos'],
+];
+---
+<Base title="Pedir orçamento" description="Conte-nos sobre o seu evento em quatro passos curtos. Sem compromisso e sem perguntar quanto quer gastar: respondemos com uma proposta e continuamos no WhatsApp." semBarra>
+  <section class="pedido" data-pedido data-url={env.PUBLIC_SUPABASE_URL || ''} data-anon={env.PUBLIC_SUPABASE_ANON_KEY || ''} data-slug={env.PUBLIC_TENANT_SLUG || 'doluxoamesa'} data-wa={CASA.whatsapp}>
+    <div class="wrap grid">
+      <aside class="rail">
+        <Image src={logo} alt="" width={116} height={146} class="logo" aria-hidden="true" />
+        <p class="cap">Pedido de orçamento</p>
+        <ol class="progresso" aria-label="Progresso do pedido" data-progresso>
+          {CAPS.map(([t, s], i) => (
+            <li data-passo={i} aria-current={i === 0 ? 'step' : undefined}>
+              <span class="perola" data-size={i}></span>
+              <span class="rotulos"><strong>{t}</strong><small>{s}</small></span>
+              <span class="feito" aria-hidden="true"><Icons name="check" size={14} /></span>
+            </li>
+          ))}
+        </ol>
+        <p class="texto">Sem compromisso. Não perguntamos quanto quer gastar: respondemos com uma proposta feita para o seu evento.</p>
+        {CASA.whatsapp && <a href={whatsappHref()} class="lnk" rel="noopener"><Icons name="whatsapp" /> Prefere falar? WhatsApp</a>}
+      </aside>
+
+      <div class="principal">
+        <header class="abertura">
+          <p class="ov">Pedido de orçamento</p>
+          <h1 class="h2">Conte-nos sobre o seu evento.</h1>
+          <p class="texto">Quatro passos curtos. O que não souber ainda, fica para a conversa.</p>
+        </header>
+
+        <form class="capitulos" novalidate data-form autocomplete="on">
+          <!-- 1 · O evento -->
+          <section class="capitulo" data-cap="0" data-estado="aberto" aria-labelledby="cap0-t">
+            <div class="cab-wrap"><h2 id="cap0-t" class="h3"><button type="button" class="cab" data-abrir="0" aria-expanded="true"><span class="ov">Passo 1 de 4</span><span class="titulo">Que celebração é?</span></button></h2><span class="resumo" data-resumo></span><button type="button" class="editar" data-abrir="0">Editar</button></div>
+            <div class="corpo">
+              <p class="texto intro">Escolha o tipo de evento.</p>
+              <div class="tiles" role="group" aria-label="Tipo de evento" data-campo="tipo" tabindex="-1">
+                {CELEBRACOES.map((c) => (
+                  <button type="button" class="tile" data-tipo={c.id} data-nome={c.nome} aria-pressed="false">
+                    <span class="tile-foto"><Image src={fotos[c.id]} alt="" widths={[240, 480]} sizes="200px" loading="lazy" /></span>
+                    <span class="tile-nome">{c.nome}</span>
+                    <span class="tile-check"><Icons name="check" size={14} /></span>
+                  </button>
+                ))}
+              </div>
+              <p class="erro" id="erro-tipo" data-erro="tipo" role="alert" hidden></p>
+              <div class="campo" data-so-outra hidden>
+                <label for="tipoOutro" class="lbl">Que celebração?</label>
+                <input id="tipoOutro" name="tipoOutro" class="fld" type="text" placeholder="ex: jantar de família, bodas de prata" />
+              </div>
+            </div>
+          </section>
+
+          <!-- 2 · Data e local -->
+          <section class="capitulo" data-cap="1" data-estado="futuro" aria-labelledby="cap1-t">
+            <div class="cab-wrap"><h2 id="cap1-t" class="h3"><button type="button" class="cab" data-abrir="1" aria-expanded="false"><span class="ov">Passo 2 de 4</span><span class="titulo">Quando e onde?</span></button></h2><span class="resumo" data-resumo></span><button type="button" class="editar" data-abrir="1">Editar</button></div>
+            <div class="corpo">
+              <p class="texto intro">Se a data ainda não está fechada, chega o mês. O local pode ser uma casa, um jardim, uma quinta ou um salão.</p>
+              <div class="campo">
+                <label for="data" class="lbl">Data do evento</label>
+                <input id="data" name="data" class="fld" type="text" placeholder="ex: 12/06/2027 ou junho de 2027" autocomplete="off" />
+                <p class="erro" id="erro-data" data-erro="data" role="alert" hidden></p>
+              </div>
+              <div class="campo">
+                <label for="local" class="lbl">Localidade</label>
+                <input id="local" name="local" class="fld" type="text" placeholder="ex: Sintra" autocomplete="address-level2" />
+                <p class="nota">A morada e o espaço em concreto ficam para a conversa.</p>
+                <p class="erro" id="erro-local" data-erro="local" role="alert" hidden></p>
+              </div>
+              <div class="campo">
+                <span class="lbl" id="espaco-l">Tipo de espaço</span>
+                <div class="pills" role="group" aria-labelledby="espaco-l" data-campo="tipoLocal" tabindex="-1">
+                  {OPCOES_LOCAL.map((o) => <button type="button" class="pill" data-valor={o} aria-pressed="false">{o}</button>)}
+                </div>
+                <p class="erro" id="erro-tipoLocal" data-erro="tipoLocal" role="alert" hidden></p>
+              </div>
+              <div class="campo">
+                <label for="conv" class="lbl">Convidados <span class="opt">· aproximadamente</span></label>
+                <div class="stepper">
+                  <button type="button" data-menos aria-label="Menos convidados"><Icons name="minus" /></button>
+                  <input id="conv" name="conv" type="number" inputmode="numeric" min="1" max="1000" placeholder="35" />
+                  <button type="button" data-mais aria-label="Mais convidados"><Icons name="plus" /></button>
+                </div>
+                <p class="nota" data-sugestao aria-live="polite"></p>
+                <p class="erro" id="erro-conv" data-erro="conv" role="alert" hidden></p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 3 · Serviços -->
+          <section class="capitulo" data-cap="2" data-estado="futuro" aria-labelledby="cap2-t">
+            <div class="cab-wrap"><h2 id="cap2-t" class="h3"><button type="button" class="cab" data-abrir="2" aria-expanded="false"><span class="ov">Passo 3 de 4</span><span class="titulo">O que interessa?</span></button></h2><span class="resumo" data-resumo></span><button type="button" class="editar" data-abrir="2">Editar</button></div>
+            <div class="corpo">
+              <p class="texto intro">Um ou os dois serviços principais. Os complementares são opcionais e podem decidir-se mais tarde.</p>
+              <div class="servicos" role="group" aria-label="Serviços principais" data-campo="servicos" tabindex="-1">
+                {SERVICOS_PRINCIPAIS.map((s) => (
+                  <button type="button" class="servico" data-servico={s.id} data-rotulo={s.servico} aria-pressed="false">
+                    <span class="marca-check"><Icons name="check" size={14} /></span>
+                    <span><strong>{s.nome}</strong><small>{s.sub}</small></span>
+                  </button>
+                ))}
+              </div>
+              <p class="erro" id="erro-servicos" data-erro="servicos" role="alert" hidden></p>
+              <div class="campo" data-so-buffet hidden>
+                <span class="lbl" id="pac-l">Medida do buffet <span class="opt" data-pac-sug></span></span>
+                <div class="pills" role="group" aria-labelledby="pac-l" data-campo="pacote">
+                  {PACOTES.map((p) => <button type="button" class="pill" data-valor={p.nome} aria-pressed="false">{p.nome} <span class="sug" hidden>· sugerido</span></button>)}
+                  <button type="button" class="pill" data-valor={PERSONALIZADO.nome} aria-pressed="false">{PERSONALIZADO.nome}</button>
+                  <button type="button" class="pill" data-valor="" aria-pressed="false">Ainda não sei</button>
+                </div>
+              </div>
+              <div class="campo">
+                <span class="lbl" id="comp-l">Complementares <span class="opt">· opcional</span></span>
+                <div class="pills" role="group" aria-labelledby="comp-l" data-campo="complementares">
+                  {COMPLEMENTARES.map((c) => <button type="button" class="pill" data-valor={c.id} data-servico={c.servico} data-balcao={c.balcao || ''} aria-pressed="false">{c.nome}</button>)}
+                </div>
+              </div>
+              <div class="campo">
+                <label for="mensagem" class="lbl">Conte-nos mais <span class="opt">· opcional</span></label>
+                <textarea id="mensagem" name="mensagem" class="fld" rows="3" placeholder="ex: ambiente bonito e acolhedor para um pedido de noivado, cor champanhe…"></textarea>
+              </div>
+              <div class="campo">
+                <label for="canal" class="lbl">Como nos conheceu? <span class="opt">· opcional</span></label>
+                <select id="canal" name="canal" class="fld">
+                  <option value="">Escolher…</option>
+                  {CANAIS.map((c) => <option value={c}>{c === 'Recomendação' ? 'Recomendação de alguém' : c === 'Pesquisa Google' ? 'Pesquisa no Google' : c}</option>)}
+                </select>
+              </div>
+            </div>
+          </section>
+
+          <!-- 4 · Sobre si -->
+          <section class="capitulo" data-cap="3" data-estado="futuro" aria-labelledby="cap3-t">
+            <div class="cab-wrap"><h2 id="cap3-t" class="h3"><button type="button" class="cab" data-abrir="3" aria-expanded="false"><span class="ov">Passo 4 de 4</span><span class="titulo">Como contactamos?</span></button></h2><span class="resumo" data-resumo></span><button type="button" class="editar" data-abrir="3">Editar</button></div>
+            <div class="corpo">
+              <p class="texto intro">Só o essencial. Confira com calma: pode voltar a qualquer parte.</p>
+              <div class="campo">
+                <label for="nome" class="lbl">Nome</label>
+                <input id="nome" name="nome" class="fld" type="text" placeholder="ex: Ana Cruz" autocomplete="name" />
+                <p class="erro" id="erro-nome" data-erro="nome" role="alert" hidden></p>
+              </div>
+              <div class="campo">
+                <label for="contacto" class="lbl">Telemóvel</label>
+                <input id="contacto" name="contacto" class="fld" type="tel" placeholder="ex: 912 345 678" autocomplete="tel" />
+                <p class="nota">Pelo menos 9 dígitos; pode usar espaços ou indicativo.</p>
+                <p class="erro" id="erro-contacto" data-erro="contacto" role="alert" hidden></p>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" name="whatsapp" checked />
+                <span class="toggle-ui" aria-hidden="true"></span>
+                <span><strong>Continuar por WhatsApp</strong><small>Depois de enviar, a conversa segue no número indicado.</small></span>
+              </label>
+            </div>
+          </section>
+
+          <!-- Rever e enviar -->
+          <section class="capitulo rever" data-cap="4" data-estado="futuro" aria-labelledby="cap4-t">
+            <div class="cab-wrap"><h2 id="cap4-t" class="h3"><button type="button" class="cab" data-abrir="4" aria-expanded="false"><span class="ov">Rever e enviar</span><span class="titulo">O pedido, antes de seguir.</span></button></h2></div>
+            <div class="corpo">
+              <div class="folha" data-folha aria-live="polite"></div>
+              <p class="texto intro">Ao enviar, o pedido chega-nos diretamente. Respondemos com uma proposta, sem chamadas inesperadas.</p>
+              <p class="erro geral" id="erro-geral" data-erro="geral" role="alert" tabindex="-1" hidden></p>
+            </div>
+          </section>
+        </form>
+
+        <section class="confirmacao" data-confirmacao hidden aria-live="polite">
+          <span class="medalhao"><Icons name="heart" size={22} /></span>
+          <p class="ov" data-confirm-ov>Pedido recebido</p>
+          <h2 class="h2" data-confirm-h2 tabindex="-1">Obrigada!</h2>
+          <p class="lead" data-confirm-lead>Vamos analisar o pedido e entramos em contacto muito em breve.</p>
+          <p class="texto" data-confirm-txt></p>
+          <div class="cta">
+            <a href="#" class="btn" data-wa-link hidden rel="noopener"><Icons name="whatsapp" /> Abrir WhatsApp</a>
+            <a href="/" class="lnk">Voltar ao início <span class="ar">→</span></a>
+          </div>
+          <div class="folha" data-folha-final></div>
+          <Image src={pearls} alt="" width={88} height={34} class="perolas" aria-hidden="true" />
+        </section>
+      </div>
+    </div>
+
+    <div class="barra" data-barra>
+      <div class="wrap barra-in">
+        <button type="button" class="anterior" data-anterior hidden>← Anterior</button>
+        <button type="button" class="avancar" data-avancar>
+          <span class="fill" data-fill></span>
+          <span class="rotulo" data-rotulo>Continuar: a data e o local →</span>
+        </button>
+        <span class="pct" data-pct aria-hidden="true">0%</span>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style is:global>
+  .rodape { padding-bottom: calc(96px + env(safe-area-inset-bottom)) !important; }
+</style>
+<style>
+  .pedido { position: relative; padding-bottom: 120px; }
+  .grid { display: grid; gap: 32px; padding-top: 32px; }
+  .rail { display: none; }
+  .abertura { display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
+  .abertura .h2 { max-width: 14ch; }
+  .capitulos { display: flex; flex-direction: column; }
+  .capitulo { border-top: 1px solid var(--borda); padding: 20px 0; }
+  .capitulo:last-child { border-bottom: 1px solid var(--borda); }
+  .cab-wrap { display: grid; grid-template-columns: 1fr auto; gap: 4px 16px; align-items: center; }
+  .cab-wrap .h3 { grid-column: 1; }
+  .cab { display: flex; flex-direction: column; gap: 4px; width: 100%; text-align: left; color: var(--tinta); font: inherit; }
+  .cab[disabled] { cursor: default; }
+  .capitulo[data-estado="futuro"] .cab .titulo { color: var(--tinta-apagada); }
+  .capitulo[data-estado="futuro"] .cab .ov { color: var(--tinta-apagada); }
+  .resumo { grid-column: 1; font-size: 14px; color: var(--tinta-suave); display: none; }
+  .editar { grid-column: 2; grid-row: 1 / span 2; display: none; min-height: 44px; padding: 0 10px; font-size: 12px; font-weight: 600; color: var(--ouro-texto); }
+  .capitulo[data-estado="feito"] .resumo { display: block; }
+  .capitulo[data-estado="feito"] .editar { display: inline-flex; align-items: center; }
+  .capitulo[data-estado="feito"] .cab-wrap .h3 { font-size: 20px; }
+  .tiles:focus-visible, .pills:focus-visible, .servicos:focus-visible { outline: 2px solid var(--ouro); outline-offset: 4px; border-radius: 12px; }
+  .corpo { display: none; flex-direction: column; gap: 22px; padding-top: 18px; }
+  .capitulo[data-estado="aberto"] .corpo { display: flex; }
+  .intro { max-width: 560px; }
+  .campo { max-width: 560px; }
+  .tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .tile { position: relative; display: flex; flex-direction: column; text-align: left; border: 1.5px solid var(--ouro-suave); border-radius: 12px; background: var(--papel); overflow: hidden; transition: border-color 0.16s, box-shadow 0.16s; }
+  .tile:hover { border-color: var(--ouro); }
+  .tile[aria-pressed="true"] { border-color: var(--ouro); background: #FFFDF4; box-shadow: 0 10px 28px rgba(201, 168, 76, 0.3); }
+  .tile-foto { display: block; aspect-ratio: 3 / 2; }
+  .tile-foto :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  .tile-nome { padding: 12px 14px; font-size: 15px; font-weight: 500; }
+  .tile[aria-pressed="true"] .tile-nome { font-weight: 600; }
+  .tile-check { position: absolute; right: 10px; top: 10px; width: 24px; height: 24px; border-radius: 50%; background: var(--ouro); color: var(--sobre-ouro); display: none; align-items: center; justify-content: center; }
+  .tile[aria-pressed="true"] .tile-check { display: inline-flex; }
+  .pills { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pills .pill .sug { color: inherit; opacity: 0.8; }
+  .stepper { display: inline-flex; align-items: center; border: 1.5px solid var(--ouro-suave); border-radius: 999px; background: var(--papel); }
+  .stepper button { width: 52px; height: 52px; display: inline-flex; align-items: center; justify-content: center; color: var(--ouro-texto); }
+  .stepper input { width: 80px; height: 48px; border: 0; text-align: center; font-size: 18px; font-weight: 600; background: transparent; font-variant-numeric: tabular-nums; -moz-appearance: textfield; }
+  .stepper input::-webkit-outer-spin-button, .stepper input::-webkit-spin-button { -webkit-appearance: none; }
+  .servicos { display: grid; gap: 12px; }
+  .servico { display: flex; align-items: center; gap: 14px; text-align: left; min-height: 88px; padding: 0 18px; border: 1.5px solid var(--ouro-suave); border-radius: 12px; background: var(--papel); transition: border-color 0.16s, box-shadow 0.16s; }
+  .servico:hover { border-color: var(--ouro); }
+  .servico[aria-pressed="true"] { border-color: var(--ouro); background: #FFFDF4; box-shadow: 0 10px 28px rgba(201, 168, 76, 0.3); }
+  .servico strong { display: block; font-size: 16px; font-weight: 600; }
+  .servico small { display: block; font-size: 12px; color: var(--tinta-suave); margin-top: 2px; }
+  .marca-check { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--ouro-suave); display: inline-flex; align-items: center; justify-content: center; color: transparent; flex: none; }
+  .servico[aria-pressed="true"] .marca-check { background: var(--ouro); border-color: var(--ouro); color: var(--sobre-ouro); }
+  .toggle { display: flex; align-items: center; gap: 16px; padding: 16px 0; border-top: 1px solid var(--borda); border-bottom: 1px solid var(--borda); max-width: 560px; cursor: pointer; }
+  .toggle input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .toggle-ui { width: 48px; height: 28px; border-radius: 999px; background: var(--ouro-suave); position: relative; flex: none; transition: background 0.16s; }
+  .toggle-ui::after { content: ''; position: absolute; left: 3px; top: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; transition: transform 0.16s var(--ease); }
+  .toggle input:checked + .toggle-ui { background: var(--ouro); }
+  .toggle input:checked + .toggle-ui::after { transform: translateX(20px); }
+  .toggle input:focus-visible + .toggle-ui { outline: 2px solid var(--ouro); outline-offset: 2px; }
+  .toggle strong { display: block; font-size: 15px; font-weight: 600; }
+  .toggle small { display: block; font-size: 13px; color: var(--tinta-suave); }
+  .folha { background: var(--papel); border: 1px solid var(--borda); border-radius: 16px; padding: 24px 26px; box-shadow: 0 8px 28px rgba(0, 0, 0, 0.06); max-width: 560px; }
+  .folha :global(.linha) { display: flex; gap: 16px; padding: 12px 0; border-top: 1px solid var(--borda-leve); font-size: 14px; align-items: baseline; }
+  .folha :global(.linha:first-of-type) { border-top: 0; }
+  .folha :global(.k) { color: var(--tinta-suave); width: 120px; flex: none; }
+  .folha :global(.v) { flex: 1; }
+  .folha :global(.e) { font-size: 12px; font-weight: 600; color: var(--ouro-texto); min-height: 44px; padding: 0 10px; margin: -12px -10px -12px 0; display: inline-flex; align-items: center; }
+  .geral { font-size: 14px; }
+  .confirmacao { display: flex; flex-direction: column; gap: 16px; align-items: flex-start; max-width: 640px; padding-top: 24px; }
+  .medalhao { width: 56px; height: 56px; border-radius: 50%; background: var(--selo); border: 1px solid var(--aro); display: inline-flex; align-items: center; justify-content: center; color: var(--ouro-texto); }
+  .confirmacao .cta { display: flex; flex-wrap: wrap; gap: 22px; align-items: center; }
+  .confirmacao .folha { width: 100%; }
+  .perolas { width: 88px; height: auto; margin-top: 12px; }
+  .barra { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; background: rgba(250, 247, 240, 0.92); backdrop-filter: blur(8px); border-top: 1px solid var(--borda); padding: 12px 0 calc(12px + env(safe-area-inset-bottom)); }
+  .barra-in { display: flex; align-items: center; gap: 16px; }
+  .anterior { font-size: 14px; color: var(--tinta-suave); white-space: nowrap; min-height: 44px; }
+  .avancar { position: relative; flex: 1; min-height: 52px; border-radius: 999px; background: var(--calha); overflow: hidden; display: flex; align-items: center; justify-content: center; }
+  .fill { position: absolute; left: 0; top: 0; height: 100%; width: 0; border-radius: 999px; background: linear-gradient(to right, var(--ouro-suave), var(--ouro)); transition: width 0.7s var(--ease); }
+  .rotulo { position: relative; font-weight: 600; font-size: 15px; color: var(--tinta); }
+  .avancar.is-pronto { animation: pulsa 2.4s ease-in-out infinite; }
+  .avancar.is-pronto .rotulo, .avancar.is-cheio .rotulo { color: var(--sobre-ouro); }
+  @keyframes pulsa { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.015); } }
+  .pct { font-size: 12px; color: var(--tinta-apagada); white-space: nowrap; display: none; }
+  .barra .avancar[disabled] { opacity: 0.7; cursor: progress; }
+  @media (prefers-reduced-motion: reduce) { .avancar.is-pronto { animation: none; } .fill { transition: none; } }
+  @media (min-width: 1024px) {
+    .grid { grid-template-columns: 340px minmax(0, 1fr); gap: 80px; padding-top: 48px; }
+    .rail { display: flex; flex-direction: column; gap: 24px; position: sticky; top: calc(var(--nav-h) + 32px); align-self: start; }
+    .rail .logo { width: 116px; height: auto; }
+    .progresso { display: flex; flex-direction: column; }
+    .progresso li { display: flex; align-items: center; gap: 16px; min-height: 56px; }
+    .progresso .perola { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--ouro-suave); flex: none; }
+    .progresso .perola[data-size="1"] { width: 20px; height: 20px; } .progresso .perola[data-size="2"] { width: 18px; height: 18px; } .progresso .perola[data-size="3"] { width: 16px; height: 16px; }
+    .progresso li[aria-current] .perola, .progresso li.feito .perola { border: 0; background: radial-gradient(circle at 34% 30%, #FFFFFF 0%, #F6EFDD 28%, #E3D5B4 62%, #B9A47A 100%); box-shadow: 0 1px 2px rgba(0,0,0,0.12), inset 0 -1px 2px rgba(120,95,40,0.25); }
+    .progresso li[aria-current] .perola { box-shadow: 0 0 0 2px var(--creme), 0 0 0 3.5px var(--ouro); }
+    .progresso .rotulos strong { display: block; font-size: 14px; font-weight: 400; color: var(--tinta-apagada); }
+    .progresso .rotulos small { display: block; font-size: 12px; color: var(--tinta-apagada); }
+    .progresso li[aria-current] strong { font-weight: 600; color: var(--tinta); }
+    .progresso li.feito strong { color: var(--tinta); }
+    .progresso .feito { margin-left: auto; color: var(--ouro-texto); display: none; }
+    .progresso li.feito .feito { display: inline-flex; }
+    .rail .texto { font-size: 13px; max-width: 300px; }
+    .tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .servicos { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 560px; }
+    .pct { display: inline; }
+    .barra-in { padding-left: calc(340px + 80px + var(--gutter)); }
+  }
+</style>
+
+<script>
+  import '../scripts/pedido.js';
+</script>

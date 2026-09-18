@@ -1,0 +1,16 @@
+---
+import Base from '../layouts/Base.astro';
+import BuffetHero from '../components/buffet/BuffetHero.astro';
+import Incluido from '../components/buffet/Incluido.astro';
+import PacotesCompletos from '../components/buffet/PacotesCompletos.astro';
+import ComoFunciona from '../components/buffet/ComoFunciona.astro';
+import PedirOrcamento from '../components/home/PedirOrcamento.astro';
+import tacas from '../assets/img/buffet_tacas.jpg';
+---
+<Base title="Buffet & Catering" description="Pacotes de buffet Essence, Supreme e Premium, com decoração incluída, copos decorativos e água aromatizada. Mais de 50 convidados: orçamento personalizado. Lisboa e arredores.">
+  <BuffetHero />
+  <Incluido />
+  <PacotesCompletos />
+  <ComoFunciona />
+  <PedirOrcamento titulo="Diga-nos quantos convidados. Nós sugerimos a medida." cta="Pedir orçamento para buffet" foto={tacas} />
+</Base>

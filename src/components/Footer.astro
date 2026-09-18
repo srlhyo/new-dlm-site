@@ -1,0 +1,48 @@
+---
+import { CASA, whatsappHref, instagramHref } from '../data/site.js';
+import logo from '../assets/img/logo.png';
+import { Image } from 'astro:assets';
+const ig = instagramHref();
+const servicos = [['Mesa Posta', '/mesa-posta'], ['Buffet & Catering', '/buffet-catering'], ['Mesa de bolo', '/#servicos'], ['Mesa de memórias', '/#servicos'], ['Bar & cocktails', '/#servicos'], ['Welcome Drink', '/#servicos']];
+const celebracoes = ['Casamentos', 'Batizados', 'Aniversários', 'Noivados', 'Chás de bebé', 'Outras celebrações'];
+---
+<footer class="rodape noite">
+  <div class="wrap">
+    <div class="topo">
+      <div class="marca">
+        <Image src={logo} alt="Do Luxo à Mesa" width={96} height={121} densities={[1, 2]} />
+        <p class="texto">Mesa Posta e Buffet &amp; Catering para celebrações. {CASA.zona}.</p>
+      </div>
+      <div class="cols">
+        <div><div class="ov">Serviços</div>{servicos.map(([l, h]) => <a href={h}>{l}</a>)}</div>
+        <div><div class="ov">Celebrações</div>{celebracoes.map((l) => <a href="/#celebracoes">{l}</a>)}</div>
+        <div>
+          <div class="ov">Contacto</div>
+          {CASA.whatsapp ? <a href={whatsappHref()} rel="noopener">WhatsApp</a> : <span>WhatsApp · [número a indicar]</span>}
+          {ig ? <a href={ig} rel="noopener">Instagram</a> : <span>Instagram · [conta a indicar]</span>}
+          {CASA.email ? <a href={`mailto:${CASA.email}`}>{CASA.email}</a> : null}
+          <a href="/pedir-orcamento">Pedir orçamento</a>
+        </div>
+      </div>
+    </div>
+    <div class="base">
+      <span>{CASA.assinatura}</span>
+      <span class="links"><a href="/privacidade">Privacidade</a></span>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .rodape { padding: clamp(48px, 6vw, 72px) 0 32px; }
+  .topo { display: grid; gap: 40px; }
+  .marca img { height: 96px; width: auto; }
+  .marca p { margin-top: 18px; max-width: 300px; font-size: 13px; }
+  .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 32px 40px; }
+  .cols .ov { margin-bottom: 12px; }
+  .cols a, .cols span { display: block; padding: 10px 0; font-size: 14px; color: var(--noite-texto); text-decoration: none; }
+  .cols a:hover { color: var(--ouro-noite); }
+  .base { margin-top: 48px; border-top: 1px solid var(--noite-borda); padding-top: 18px; display: flex; flex-wrap: wrap; gap: 12px 24px; justify-content: space-between; font-size: 12px; color: var(--noite-suave); }
+  .links { display: flex; gap: 18px; }
+  .links a { color: var(--noite-suave); text-decoration: none; display: inline-flex; align-items: center; min-height: 44px; }
+  @media (min-width: 900px) { .topo { grid-template-columns: 320px 1fr; gap: 64px; } }
+</style>

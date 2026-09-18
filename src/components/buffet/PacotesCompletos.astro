@@ -1,0 +1,171 @@
+---
+import { Image } from 'astro:assets';
+import Icons from '../Icons.astro';
+import { PACOTES, PERSONALIZADO, formatarPreco } from '../../data/pacotes.js';
+import essence from '../../assets/img/pack_essence.jpg';
+import supreme from '../../assets/img/pack_supreme.jpg';
+import premium from '../../assets/img/pack_premium.jpg';
+import personalizado from '../../assets/img/pack_personalizado.jpg';
+const fotos = { essence, supreme, premium };
+const maxMesa = Math.max(...PACOTES.map((p) => p.mesaCm));
+---
+<section class="sec linho pacs" id="pacotes" aria-labelledby="pacs-t" data-pacotes>
+  <div class="wrap">
+    <div class="sec-head">
+      <div><p class="ov">Os pacotes</p><h2 id="pacs-t" class="h2">Escolha a medida.</h2></div>
+      <p class="texto">Os preços são «desde» e servem para orientar. O orçamento é feito para cada evento, e acima de 50 convidados é sempre personalizado.</p>
+    </div>
+
+    <div class="sugestao">
+      <label for="conv" class="lbl-inline">Quantos convidados?</label>
+      <div class="stepper">
+        <button type="button" data-menos aria-label="Menos convidados"><Icons name="minus" /></button>
+        <input id="conv" type="number" inputmode="numeric" min="1" max="500" placeholder="ex: 35" aria-describedby="sug-txt" />
+        <button type="button" data-mais aria-label="Mais convidados"><Icons name="plus" /></button>
+      </div>
+      <p id="sug-txt" class="texto" aria-live="polite" data-sug-txt>Até 18, Essence; até 35, Supreme; até 50, Premium; mais de 50, personalizado.</p>
+    </div>
+
+    <div class="lista">
+      {PACOTES.map((p, i) => (
+        <article class:list={['pac', { destaque: p.maisEscolhido }]} id={p.id} data-pacote={p.nome} data-max={p.maxConvidados} data-mais-escolhido={p.maisEscolhido ? 'true' : undefined}>
+          <span class="selo selo-sug" hidden data-selo-sug></span>
+          {p.maisEscolhido && <span class="selo selo-me" data-selo-me>Mais escolhido</span>}
+          <div class="col-a">
+            <figure class="foto"><Image src={fotos[p.id]} alt="" widths={[420, 720]} sizes="(min-width: 1024px) 300px, 100vw" loading="lazy" /></figure>
+            <h3 class="nome">{p.nome}</h3>
+            <div class="preco"><span class="cap">Desde</span><span class="num">{formatarPreco(p.preco)}</span></div>
+            <p class="guests">{p.detalhe}</p>
+            <div class="barra-mesa" aria-hidden="true"><div style={`width:${Math.round((p.mesaCm / maxMesa) * 100)}%`}></div></div>
+            <p class="meta">{p.mesa} · {p.pecas}</p>
+            <p class="tag">{p.tagline}</p>
+          </div>
+          <div class="col-b">
+            <p class="cap">Inclui</p>
+            <ul class="inclui" data-inclui id={`inclui-${p.id}`}>
+              {p.inclui.map((it, k) => <li class:list={{ extra: k >= 3 }}><span class="check"><Icons name="check" /></span><span>{it}</span></li>)}
+            </ul>
+            <button type="button" class="lnk ver-mais" data-ver-mais aria-expanded="false" aria-controls={`inclui-${p.id}`}>Ver mais {p.inclui.length - 3} itens e a oferta incluída <span class="ar">→</span></button>
+          </div>
+          <div class="col-c">
+            <div class="oferta" data-oferta>
+              <p class="cap dourado">Oferta incluída</p>
+              <ul>{p.oferta.map((o) => <li>{o}</li>)}</ul>
+            </div>
+            {p.maisEscolhido
+              ? <a href={`/pedir-orcamento?pacote=${p.nome}`} class="btn btn-sm">Pedir orçamento com o {p.nome}</a>
+              : <a href={`/pedir-orcamento?pacote=${p.nome}`} class="lnk">Pedir orçamento com o {p.nome} <span class="ar">→</span></a>}
+          </div>
+        </article>
+      ))}
+
+      <article class="pac custom" id="mais50" data-pacote={PERSONALIZADO.nome}>
+        <span class="selo selo-sug" hidden data-selo-sug></span>
+        <figure class="foto"><Image src={personalizado} alt="" widths={[420, 720]} sizes="(min-width: 1024px) 180px, 100vw" loading="lazy" /></figure>
+        <div class="custom-txt">
+          <h3 class="nome">{PERSONALIZADO.nome}</h3>
+          <p class="guests">{PERSONALIZADO.detalhe}</p>
+          <p class="tag">Não cabe em pacote fechado. Pedimos o número exato de convidados e respondemos com um orçamento calculado para esse número.</p>
+        </div>
+        <a href="/pedir-orcamento?pacote=Personalizado" class="btn-o btn-sm">Pedir orçamento personalizado</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<style>
+  .sugestao { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; padding: 16px 0; border-top: 1px solid #E6DCC6; border-bottom: 1px solid #E6DCC6; margin-bottom: 40px; }
+  .lbl-inline { font-weight: 600; font-size: 14px; }
+  .stepper { display: inline-flex; align-items: center; border: 1.5px solid var(--ouro-suave); border-radius: 999px; background: var(--papel); }
+  .stepper button { width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; color: var(--ouro-texto); }
+  .stepper input { width: 72px; height: 40px; border: 0; text-align: center; font-size: 16px; font-weight: 600; background: transparent; font-variant-numeric: tabular-nums; -moz-appearance: textfield; }
+  .stepper input::-webkit-outer-spin-button, .stepper input::-webkit-spin-button { -webkit-appearance: none; }
+  .sugestao .texto { font-size: 14px; flex: 1 1 320px; }
+  .sugestao .texto strong { color: var(--ouro-texto); }
+  .lista { display: flex; flex-direction: column; gap: 32px; }
+  .pac { position: relative; display: grid; gap: 24px; background: var(--papel); border: 1px solid var(--borda); border-radius: var(--radius-card); padding: 24px; }
+  .pac.destaque { background: #FFFDF4; border-color: var(--ouro-suave); box-shadow: 0 12px 36px rgba(201, 168, 76, 0.2); }
+  .pac.is-sugerido { border-color: var(--ouro); box-shadow: 0 12px 36px rgba(201, 168, 76, 0.28); }
+  .pac.custom { border: 1.5px dashed #D6C9A8; background: transparent; }
+  .selo { position: absolute; left: 24px; top: -13px; }
+  .foto { aspect-ratio: 3 / 2; overflow: hidden; border-radius: 6px; background: var(--linho); }
+  .foto :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  .nome { font-family: var(--font-display); font-weight: 400; font-size: 34px; line-height: 1.1; margin-top: 18px; }
+  .preco { margin-top: 10px; display: flex; align-items: baseline; gap: 10px; }
+  .preco .num { font-size: 36px; line-height: 1; }
+  .guests { margin-top: 6px; font-size: 14px; }
+  .barra-mesa { margin-top: 14px; height: 3px; width: 240px; max-width: 100%; background: var(--calha); border-radius: 999px; }
+  .barra-mesa div { height: 100%; background: var(--ouro); border-radius: 999px; }
+  .meta { margin-top: 8px; font-size: 13px; color: var(--tinta-suave); }
+  .tag { margin-top: 14px; font-size: 14px; line-height: 1.55; color: var(--tinta-suave); text-wrap: pretty; }
+  .col-b .cap { margin-bottom: 12px; }
+  .inclui { display: grid; gap: 10px 24px; }
+  .inclui li { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; line-height: 1.45; }
+  .ver-mais { margin-top: 12px; font-size: 13px; }
+  .col-c { display: flex; flex-direction: column; gap: 18px; }
+  .oferta { background: var(--selo); border: 1px solid var(--ouro-suave); border-radius: 12px; padding: 18px 20px; }
+  .oferta .dourado { color: var(--ouro-texto); margin-bottom: 10px; }
+  .oferta ul { padding-left: 16px; list-style: disc; }
+  .oferta li { font-size: 13px; line-height: 1.5; margin-bottom: 6px; }
+  .custom .foto { aspect-ratio: 9 / 7; }
+  .custom-txt .nome { margin-top: 0; }
+  @media (max-width: 899px) {
+    .pac:not(.is-aberto) .inclui .extra, .pac:not(.is-aberto) .oferta { display: none; }
+  }
+  @media (min-width: 900px) {
+    .pac { grid-template-columns: 300px minmax(0, 1fr); gap: 32px 40px; padding: 32px; }
+    .col-c { grid-column: 2; }
+    .inclui { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .ver-mais { display: none; }
+    .custom { grid-template-columns: 180px minmax(0, 1fr) auto; align-items: center; }
+  }
+  @media (min-width: 1200px) {
+    .pac { grid-template-columns: 300px minmax(0, 1fr) 300px; }
+    .col-c { grid-column: 3; }
+  }
+</style>
+
+<script>
+  import { PACOTES, PERSONALIZADO, pacoteSugerido } from '../../data/pacotes.js';
+  const sec = document.querySelector('[data-pacotes]');
+  if (sec) {
+    const input = sec.querySelector('#conv');
+    const txt = sec.querySelector('[data-sug-txt]');
+    const cards = sec.querySelectorAll('[data-pacote]');
+    const base = txt.textContent;
+    const aplicar = () => {
+      const n = input.value.trim();
+      const sug = pacoteSugerido(n);
+      cards.forEach((c) => {
+        const eSug = sug && c.dataset.pacote === sug;
+        c.classList.toggle('is-sugerido', Boolean(eSug));
+        const sSug = c.querySelector('[data-selo-sug]');
+        const sMe = c.querySelector('[data-selo-me]');
+        if (sSug) { sSug.hidden = !eSug; sSug.textContent = eSug ? `Sugerido para ${Number(n)} convidados` : ''; }
+        if (sMe) sMe.hidden = Boolean(sug); // o selo «Sugerido» ganha ao «Mais escolhido»
+      });
+      if (!sug) { txt.textContent = base; return; }
+      txt.innerHTML = sug === PERSONALIZADO.nome
+        ? `Para <strong>${Number(n)}</strong> convidados o buffet é <strong>personalizado</strong>: pedimos o número exato e respondemos com um orçamento calculado.`
+        : `Para <strong>${Number(n)}</strong> convidados sugerimos o <strong>${sug}</strong>.`;
+    };
+    const irAoSugerido = () => {
+      const sug = pacoteSugerido(input.value.trim()); if (!sug) return;
+      sec.querySelector(`[data-pacote="${sug}"]`)?.scrollIntoView({ block: 'nearest', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    };
+    input.addEventListener('input', aplicar);
+    input.addEventListener('change', irAoSugerido);
+    sec.querySelector('[data-menos]').addEventListener('click', () => { input.value = String(Math.max(1, (Number(input.value) || 1) - 1)); aplicar(); });
+    sec.querySelector('[data-mais]').addEventListener('click', () => { input.value = String((Number(input.value) || 0) + 1); aplicar(); });
+    const url = new URLSearchParams(location.search);
+    if (url.get('convidados')) { input.value = url.get('convidados'); aplicar(); }
+    // «Ver mais N itens e a oferta incluída» — nunca truncar em silêncio.
+    sec.querySelectorAll('[data-ver-mais]').forEach((b) => b.addEventListener('click', () => {
+      const card = b.closest('.pac');
+      const aberto = card.classList.toggle('is-aberto');
+      b.setAttribute('aria-expanded', String(aberto));
+      const n = card.querySelectorAll('.inclui .extra').length;
+      b.innerHTML = aberto ? 'Ver menos <span class="ar">↑</span>' : `Ver mais ${n} itens e a oferta incluída <span class="ar">→</span>`;
+    }));
+  }
+</script>

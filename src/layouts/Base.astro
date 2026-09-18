@@ -1,0 +1,62 @@
+---
+import { Font } from 'astro:assets';
+import '../styles/global.css';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import Icons from '../components/Icons.astro';
+import { CASA, whatsappHref } from '../data/site.js';
+
+const {
+  title,
+  description = 'Mesa Posta e Buffet & Catering para casamentos, batizados, aniversários e outras celebrações, em Lisboa e arredores. Acompanhamento da primeira ideia ao dia do evento.',
+  image = '/og.jpg',
+  semBarra = false,
+  semNav = false,
+  semRodape = false,
+} = Astro.props;
+const fullTitle = title ? `${title} · ${CASA.nome}` : `${CASA.nome} — Mesa Posta e Buffet & Catering, Lisboa`;
+const canonical = new URL(Astro.url.pathname.replace(/(?:\/index)?\.html$/, '') || '/', Astro.site);
+---
+<!doctype html>
+<html lang="pt-PT" class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <script is:inline>document.documentElement.classList.replace('no-js', 'js');</script>
+    <Font cssVariable="--font-display" preload />
+    <Font cssVariable="--font-sans" preload />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#FAFAF8" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={CASA.nome} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(image, Astro.site)} />
+    <meta property="og:locale" content="pt_PT" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json" set:html={JSON.stringify({
+      '@context': 'https://schema.org', '@type': 'LocalBusiness', name: CASA.nome, url: CASA.site,
+      areaServed: 'Lisboa e arredores', description, image: new URL('/og.jpg', Astro.site),
+      makesOffer: [{ '@type': 'Offer', name: 'Mesa Posta' }, { '@type': 'Offer', name: 'Buffet & Catering' }],
+    })} />
+  </head>
+  <body class:list={[{ 'tem-barra': !semBarra }]}>
+    <a href="#conteudo" class="skip">Saltar para o conteúdo</a>
+    {!semNav && <Nav />}
+    <main id="conteudo"><slot /></main>
+    {!semRodape && <Footer />}
+    {!semBarra && (
+      <div class="barra-fixa" id="barra-fixa">
+        <a href="/pedir-orcamento" class="btn">Pedir orçamento</a>
+        {CASA.whatsapp && <a href={whatsappHref()} class="btn-o" aria-label="WhatsApp" rel="noopener"><Icons name="whatsapp" size={20} /></a>}
+      </div>
+    )}
+    <script>
+      import '../scripts/motion.js';
+    </script>
+  </body>
+</html>

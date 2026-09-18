@@ -1,0 +1,81 @@
+---
+import Plate from '../Plate.astro';
+import Icons from '../Icons.astro';
+import clipMp4 from '../../assets/video/hero.mp4';
+import { CASA, whatsappHref } from '../../data/site.js';
+import detalhe from '../../assets/img/hero_detail.jpg';
+import conjunto from '../../assets/img/hero_whole.jpg';
+---
+<section class="hero" data-hero aria-labelledby="hero-t">
+  <div class="wrap hero-grid">
+    <div class="texto-col">
+      <p class="ov reveal">Eventos · Lisboa e arredores</p>
+      <h1 id="hero-t" class="h1 reveal d1">Compomos a mesa.<br /><em>Cuidamos do resto.</em></h1>
+      <p class="lead reveal d2">Mesa Posta e Buffet &amp; Catering para casamentos, batizados, aniversários e outras celebrações. Acompanhamos cada evento da primeira ideia ao dia da celebração.</p>
+      <div class="cta reveal d2">
+        <a href="/pedir-orcamento" class="btn">Pedir orçamento</a>
+        {CASA.whatsapp && <a href={whatsappHref()} class="lnk quieto" rel="noopener">ou fale connosco no WhatsApp</a>}
+      </div>
+      <div class="programa reveal d3">
+        <div class="hl"></div>
+        <nav aria-label="Capítulos">
+          <a href="/mesa-posta" class="cap"><span>01</span> Mesa Posta</a>
+          <a href="/buffet-catering" class="cap"><span>02</span> Buffet &amp; Catering</a>
+          <a href="#servicos" class="cap"><span>03</span> Complementares</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="foto-col">
+      <div class="grande unveil" data-depth="10">
+        <Plate src={detalhe} alt="Lugar composto: rosas brancas, guardanapo verde-sálvia e talheres dourados" pos="50% 45%" priority sizes="(min-width: 1024px) 48vw, 100vw" />
+        <video class="ambiente" data-ambiente muted loop playsinline preload="none" aria-hidden="true" tabindex="-1">
+          <source src={clipMp4} type="video/mp4" />
+        </video>
+        <button type="button" class="video-tag" data-video-toggle aria-pressed="true" aria-label="Pausar o vídeo de ambiente"><Icons name="play" size={10} /> <span data-video-label>Vídeo · 8 s · sem som</span></button>
+      </div>
+      <figure class="pequeno reveal d3">
+        <Plate src={conjunto} alt="Mesas compridas junto ao mar, prontas para os convidados" ratio="3 / 3.8" lift sombra sizes="(min-width: 1024px) 300px, 40vw" />
+        <figcaption class="legenda"><span class="cap">Mesa Posta · junto ao mar</span><p>O conjunto e o detalhe, com a mesma atenção.</p></figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero { position: relative; padding-top: clamp(24px, 4vw, 56px); overflow-x: clip; }
+  .hero-grid { display: grid; gap: 32px; }
+  .texto-col { display: flex; flex-direction: column; gap: 22px; }
+  .h1 { max-width: 12ch; }
+  .lead { max-width: 460px; }
+  .cta { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 26px; }
+  .quieto { color: var(--tinta-suave); font-weight: 500; }
+  .programa { margin-top: 12px; max-width: 460px; }
+  .programa nav { display: flex; flex-wrap: wrap; gap: 12px 28px; margin-top: 18px; }
+  .programa a { text-decoration: none; display: inline-flex; gap: 10px; min-height: 44px; align-items: center; }
+  .programa a span { color: var(--ouro-texto); }
+  .foto-col { position: relative; }
+  .grande { position: relative; aspect-ratio: 4 / 5; }
+  .grande :global(.plate) { position: absolute; inset: 0; }
+  .ambiente { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 45%; opacity: 0; transition: opacity 0.9s var(--ease); }
+  .ambiente.is-playing { opacity: 1; }
+  .video-tag { right: 20px; bottom: 20px; }
+  .pequeno { width: 44%; max-width: 300px; margin: -22% 0 0 var(--gutter); position: relative; z-index: 3; }
+  @media (min-width: 1024px) {
+    .hero { padding-top: 0; }
+    .hero-grid { grid-template-columns: minmax(0, 6fr) minmax(0, 6fr); gap: 0; align-items: stretch; }
+    .texto-col { padding: 96px 72px 64px 0; justify-content: center; }
+    .foto-col { margin-right: calc(-1 * max(var(--gutter), (100vw - var(--wrap)) / 2)); }
+    .grande { aspect-ratio: auto; height: 100%; min-height: 720px; }
+    .pequeno { position: absolute; left: -60px; bottom: -80px; width: 240px; margin: 0; }
+    .programa { margin-top: 36px; }
+  }
+  @media (min-width: 1360px) { .pequeno { left: -160px; width: 300px; } .texto-col { padding-right: 40px; } }
+  @media (prefers-reduced-motion: reduce) { .ambiente { display: none; } }
+</style>
+
+<script>
+  document.querySelectorAll('video.ambiente').forEach((v) => {
+    v.addEventListener('playing', () => v.classList.add('is-playing'));
+  });
+</script>

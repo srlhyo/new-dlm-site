@@ -1,0 +1,49 @@
+---
+import Plate from '../Plate.astro';
+import Icons from '../Icons.astro';
+import { instagramHref } from '../../data/site.js';
+import cartao from '../../assets/img/proof_bordeaux.jpg';
+import copo from '../../assets/img/proof_copo.jpg';
+import equipa from '../../assets/img/real_equipa.jpg';
+const ig = instagramHref();
+---
+<section class="sec linho real" aria-labelledby="real-t">
+  <div class="wrap grid">
+    <div class="conteudo">
+      <p class="ov">O que fica</p>
+      <h2 id="real-t" class="h2">Pequenas coisas que as pessoas guardam.</h2>
+      <blockquote class="testemunho">
+        <p>[Testemunho real, a recolher com a cliente. Duas ou três frases, com o nome e a celebração.]</p>
+        <footer class="cap">[Nome] · [celebração] · [ano]</footer>
+      </blockquote>
+      <div class="hl"></div>
+      {ig ? <a href={ig} class="lnk" rel="noopener"><Icons name="instagram" /> Siga o dia a dia no Instagram <span class="ar">→</span></a> : <span class="lnk apagado"><Icons name="instagram" /> Instagram · [conta a indicar]</span>}
+    </div>
+    <div class="artefactos">
+      <figure class="a1 reveal"><Plate src={cartao} alt="Cartão de agradecimento sobre sousplat dourado" ratio="26 / 33" lift widths={[280, 560, 840]} sizes="(min-width: 1024px) 260px, 46vw" /><figcaption class="legenda"><span class="cap">Um cartão de agradecimento em cada lugar</span></figcaption></figure>
+      <figure class="a2 reveal d1"><Plate src={copo} alt="Copo de sobremesa com o selo Do Luxo à Mesa" ratio="22 / 28" lift widths={[240, 480, 720]} sizes="(min-width: 1024px) 220px, 40vw" /><figcaption class="legenda"><span class="cap">Copos assinados pela casa</span></figcaption></figure>
+      <figure class="a3 reveal d2"><Plate src={equipa} alt="Equipa no balcão de Welcome Drink" ratio="3 / 2" pos="50% 30%" lift sizes="(min-width: 1024px) 300px, 100vw" /><figcaption class="legenda"><span class="cap">Equipa no Welcome Drink</span><p>Bastidores do balcão.</p></figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<style>
+  .grid { display: grid; gap: 40px; }
+  .conteudo { display: flex; flex-direction: column; gap: 22px; }
+  .conteudo .h2 { max-width: 14ch; }
+  .testemunho { margin: 8px 0 0; max-width: 520px; }
+  .testemunho p { font-family: var(--font-display); font-style: italic; font-size: clamp(20px, 2vw, 26px); line-height: 1.35; color: var(--tinta-suave); }
+  .testemunho footer { margin-top: 18px; }
+  .hl { width: 300px; }
+  .apagado { color: var(--tinta-apagada); }
+  .artefactos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
+  .a2 { margin-top: 12%; }
+  .a3 { grid-column: 1 / -1; }
+  @media (min-width: 1024px) {
+    .grid { grid-template-columns: minmax(0, 6fr) minmax(0, 6fr); gap: 80px; align-items: start; }
+    .artefactos { grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 20px; }
+    .a1 { grid-column: 1 / span 5; grid-row: 1; }
+    .a2 { grid-column: 7 / span 4; grid-row: 1; margin-top: 30px; }
+    .a3 { grid-column: 2 / span 6; grid-row: 2; margin-top: 0; }
+  }
+</style>
