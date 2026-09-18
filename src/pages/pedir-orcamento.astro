@@ -77,8 +77,20 @@ const CAPS = [
             <div class="corpo">
               <p class="texto intro">Se a data ainda não está fechada, chega o mês. O local pode ser uma casa, um jardim, uma quinta ou um salão.</p>
               <div class="campo">
-                <label for="data" class="lbl">Data do evento</label>
-                <input id="data" name="data" class="fld" type="text" placeholder="ex: 12/06/2027 ou junho de 2027" autocomplete="off" />
+                <span class="lbl" id="data-l">Data do evento</span>
+                <div class="pills" role="group" aria-labelledby="data-l" data-campo="dataModo">
+                  <button type="button" class="pill" data-valor="exata" aria-pressed="true">Tenho data</button>
+                  <button type="button" class="pill" data-valor="aprox" aria-pressed="false">Ainda não sei ao certo</button>
+                </div>
+                <div class="data-exata" data-data-exata>
+                  <label for="data" class="sr-only">Data do evento</label>
+                  <input id="data" name="data" class="fld" type="date" autocomplete="off" />
+                  <p class="nota">Abre o calendário do telemóvel ou do computador.</p>
+                </div>
+                <div data-data-aprox hidden>
+                  <label for="dataAprox" class="lbl">Mês ou época aproximada</label>
+                  <input id="dataAprox" name="dataAprox" class="fld" type="text" placeholder="ex: junho de 2027, ou primavera" autocomplete="off" />
+                </div>
                 <p class="erro" id="erro-data" data-erro="data" role="alert" hidden></p>
               </div>
               <div class="campo">
@@ -241,6 +253,9 @@ const CAPS = [
   .capitulo[data-estado="aberto"] .corpo { display: flex; }
   .intro { max-width: 560px; }
   .campo { max-width: 560px; }
+  .data-exata, [data-data-aprox] { margin-top: 12px; }
+  input[type="date"].fld { max-width: 280px; }
+  input[type="date"].fld::-webkit-calendar-picker-indicator { cursor: pointer; opacity: 0.7; }
   .tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
   .tile { position: relative; display: flex; flex-direction: column; text-align: left; border: 1.5px solid var(--ouro-suave); border-radius: 12px; background: var(--papel); overflow: hidden; transition: border-color 0.16s, box-shadow 0.16s; }
   .tile:hover { border-color: var(--ouro); }

@@ -28,7 +28,7 @@ function iniciar(raiz) {
   const $ = (s) => raiz.querySelector(s);
 
   const CHAVE = 'dlm-pedido';
-  const vazio = { tipo: '', tipoNome: '', tipoOutro: '', data: '', local: '', tipoLocal: '', conv: '', servicos: [], pacote: null, complementares: [], mensagem: '', canal: '', nome: '', contacto: '', whatsapp: true };
+  const vazio = { tipo: '', tipoNome: '', tipoOutro: '', dataModo: 'exata', data: '', dataAprox: '', local: '', tipoLocal: '', conv: '', servicos: [], pacote: null, complementares: [], mensagem: '', canal: '', nome: '', contacto: '', whatsapp: true };
   let st = { ...vazio };
   try { st = { ...vazio, ...JSON.parse(sessionStorage.getItem(CHAVE) || '{}') }; } catch {}
   const guardar = () => { try { sessionStorage.setItem(CHAVE, JSON.stringify(st)); } catch {} };
@@ -59,7 +59,9 @@ function iniciar(raiz) {
     st.tipo = b.dataset.tipo; st.tipoNome = b.dataset.nome; pintar();
   });
   $('#tipoOutro').addEventListener('input', (e) => { st.tipoOutro = e.target.value; pintar(false); guardar(); });
-  ['data', 'local', 'nome', 'contacto', 'mensagem'].forEach((id) => $(`#${id}`).addEventListener('input', (e) => { st[id] = e.target.value; limparErro(id); pintar(false); guardar(); }));
+  ['data', 'dataAprox', 'local', 'nome', 'contacto', 'mensagem'].forEach((id) => $(`#${id}`).addEventListener('input', (e) => { st[id] = e.target.value; limparErro(id === 'dataAprox' ? 'data' : id); pintar(false); guardar(); }));
+  $('#data').setAttribute('min', new Date().toISOString().slice(0, 10));
+  $('[data-campo="dataModo"]').addEventListener('click', (e) => { const b = e.target.closest('[data-valor]'); if (!b) return; st.dataModo = b.dataset.valor; limparErro('data'); pintar(); ($(st.dataModo === 'exata' ? '#data' : '#dataAprox')).focus(); });
   $('#canal').addEventListener('change', (e) => { st.canal = e.target.value; guardar(); });
   $('[data-campo="tipoLocal"]').addEventListener('click', (e) => { const b = e.target.closest('[data-valor]'); if (!b) return; st.tipoLocal = b.dataset.valor; limparErro('tipoLocal'); pintar(); });
   const conv = $('#conv');
@@ -95,7 +97,7 @@ function iniciar(raiz) {
     const e = {};
     if (n === 0 && !st.tipo) e.tipo = 'Escolha o tipo de evento.';
     if (n === 1) {
-      if (!st.data.trim()) e.data = 'Indique a data do evento, ou o mês.';
+      if (st.dataModo === 'aprox' ? !st.dataAprox.trim() : !st.data.trim()) e.data = st.dataModo === 'aprox' ? 'Indique o mês ou a época aproximada.' : 'Indique a data do evento, ou escolha «Ainda não sei ao certo».';
       if (!st.local.trim()) e.local = 'Indique a localidade do evento.';
       if (!st.tipoLocal) e.tipoLocal = 'Escolha o tipo de espaço.';
       if (!(Number(st.conv) >= 1)) e.conv = 'Indique o número aproximado de convidados.';
@@ -127,12 +129,18 @@ function iniciar(raiz) {
 
   // ---------- progresso: os obrigatórios enchem a barra ----------
   const obrigatorios = () => [
-    Boolean(st.tipo), Boolean(st.data.trim()), Boolean(st.local.trim()), Boolean(st.tipoLocal), Boolean(st.conv && Number(st.conv) > 0),
+    Boolean(st.tipo), Boolean(dataTexto()), Boolean(st.local.trim()), Boolean(st.tipoLocal), Boolean(st.conv && Number(st.conv) > 0),
     st.servicos.length > 0, Boolean(st.nome.trim()), digitos(st.contacto).length >= 9,
   ];
 
   // ---------- resumo ----------
   const conv1 = (n) => `${n} ${Number(n) === 1 ? 'convidado' : 'convidados'}`;
+  const dataTexto = () => {
+    if (st.dataModo === 'aprox') return st.dataAprox.trim();
+    if (!st.data.trim()) return '';
+    const d = new Date(`${st.data.trim()}T00:00:00`);
+    return Number.isNaN(d.getTime()) ? st.data.trim() : d.toLocaleDateString('pt-PT', { day: 'numeric', month: 'long', year: 'numeric' });
+  };
   const nomePacote = () => st.pacote === '' ? 'medida a decidir' : st.pacote || null;
   const complementaresNomes = () => st.complementares.map((id) => raiz.querySelector(`[data-campo="complementares"] [data-valor="${id}"]`)?.textContent.trim()).filter(Boolean);
   const servicosTexto = () => {
@@ -143,7 +151,7 @@ function iniciar(raiz) {
   };
   const tipoTexto = () => (st.tipo === 'outra' && st.tipoOutro.trim() ? st.tipoOutro.trim() : st.tipoNome);
   const linhasResumo = () => [
-    ['Evento', tipoTexto(), 0], ['Data', st.data.trim(), 1], ['Local', `${st.local.trim()}${st.tipoLocal ? ` · ${st.tipoLocal}` : ''}`, 1],
+    ['Evento', tipoTexto(), 0], ['Data', dataTexto(), 1], ['Local', `${st.local.trim()}${st.tipoLocal ? ` · ${st.tipoLocal}` : ''}`, 1],
     ['Convidados', st.conv ? `≈ ${conv1(st.conv)}` : '', 1], ['Serviços', servicosTexto(), 2], ['Complementares', complementaresNomes().join(' · '), 2],
     ['Mensagem', st.mensagem.trim(), 2], ['Contacto', [st.nome.trim(), st.contacto.trim(), st.whatsapp ? 'WhatsApp' : ''].filter(Boolean).join(' · '), 3],
   ].filter(([, v]) => v);
@@ -158,7 +166,10 @@ function iniciar(raiz) {
   function pintar(guarda = true) {
     pressionar(tiposG, st.tipo);
     $('[data-so-outra]').hidden = st.tipo !== 'outra';
-    $('#tipoOutro').value = st.tipoOutro; $('#data').value = st.data; $('#local').value = st.local;
+    $('#tipoOutro').value = st.tipoOutro; $('#data').value = st.data; $('#dataAprox').value = st.dataAprox; $('#local').value = st.local;
+    pressionar($('[data-campo="dataModo"]'), st.dataModo);
+    $('[data-data-exata]').hidden = st.dataModo !== 'exata';
+    $('[data-data-aprox]').hidden = st.dataModo !== 'aprox';
     pressionar($('[data-campo="tipoLocal"]'), st.tipoLocal);
     if (conv.value !== st.conv) conv.value = st.conv;
     const sug = pacoteSugerido(st.conv);
@@ -176,7 +187,7 @@ function iniciar(raiz) {
     $('#mensagem').value = st.mensagem; $('#canal').value = st.canal; $('#nome').value = st.nome; $('#contacto').value = st.contacto;
     form.querySelector('[name="whatsapp"]').checked = st.whatsapp;
     // resumos dos capítulos feitos
-    const resumos = [tipoTexto(), [st.data.trim(), st.local.trim(), st.conv ? `≈ ${conv1(st.conv)}` : ''].filter(Boolean).join(' · '), [servicosTexto(), ...complementaresNomes()].filter(Boolean).join(' · '), [st.nome.trim(), st.contacto.trim()].filter(Boolean).join(' · ')];
+    const resumos = [tipoTexto(), [dataTexto(), st.local.trim(), st.conv ? `≈ ${conv1(st.conv)}` : ''].filter(Boolean).join(' · '), [servicosTexto(), ...complementaresNomes()].filter(Boolean).join(' · '), [st.nome.trim(), st.contacto.trim()].filter(Boolean).join(' · ')];
     caps.forEach((c) => { const r = c.querySelector('[data-resumo]'); if (r) r.textContent = resumos[Number(c.dataset.cap)] || ''; });
     // barra
     const ok = obrigatorios(); const p = Math.round((ok.filter(Boolean).length / ok.length) * 100);
@@ -252,7 +263,7 @@ function iniciar(raiz) {
   };
   const payload = async () => {
     const contacto = st.contacto.trim();
-    const dataIso = iso(st.data);
+    const dataIso = st.dataModo === 'aprox' ? iso(st.dataAprox) : iso(st.data);
     const respostas = { nomeDoCliente: st.nome.trim(), contactoPrincipal: contacto, localEvento: st.local.trim(), tipoLocal: st.tipoLocal, numeroConvidados: st.conv };
     if (dataIso) respostas.dataEvento = dataIso;
     if (st.whatsapp) respostas.numeroWhatsapp = contacto;
@@ -273,7 +284,7 @@ function iniciar(raiz) {
     if (balcao.length) respostas.servicosBalcao = balcao;
     if (st.canal) respostas.canalOrigem = st.canal;
     const notas = [
-      dataIso ? '' : `Data aproximada: ${st.data.trim()}`,
+      dataIso ? '' : `Data aproximada: ${dataTexto()}`,
       st.mensagem.trim(),
       st.servicos.includes('buffet') && (st.pacote === '' || st.pacote === null) ? 'Medida do buffet ainda por decidir.' : '',
       'Pedido enviado pelo site.',
@@ -284,7 +295,7 @@ function iniciar(raiz) {
       p_tenant_slug: cfg.slug,
     };
   };
-  const mensagemWa = () => `Olá! Enviei um pedido de orçamento pelo site: ${tipoTexto()}, ${st.data.trim()}, ${st.local.trim()}, cerca de ${st.conv} convidados, ${servicosTexto()}${complementaresNomes().length ? ` + ${complementaresNomes().join(', ')}` : ''}. Sou ${st.nome.trim()}.`;
+  const mensagemWa = () => `Olá! Enviei um pedido de orçamento pelo site: ${tipoTexto()}, ${dataTexto()}, ${st.local.trim()}, cerca de ${st.conv} convidados, ${servicosTexto()}${complementaresNomes().length ? ` + ${complementaresNomes().join(', ')}` : ''}. Sou ${st.nome.trim()}.`;
   const waHref = () => (cfg.wa ? `https://wa.me/${cfg.wa}?text=${encodeURIComponent(mensagemWa())}` : '');
 
   async function enviar() {
@@ -321,7 +332,8 @@ function iniciar(raiz) {
     $('[data-confirm-h2]')?.focus?.();
   }
 
-  // arranque — sem roubar o foco nem fazer scroll
+  // arranque — retoma no primeiro capítulo por completar, sem roubar o foco nem fazer scroll
   pintar(false);
-  abrir(0, { focar: false });
+  const inicio = !st.tipo ? 0 : Object.keys(validar(1)).length ? 1 : Object.keys(validar(2)).length ? 2 : 3;
+  abrir(inicio, { focar: false });
 }
