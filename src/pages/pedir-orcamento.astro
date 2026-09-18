@@ -33,7 +33,7 @@ const CAPS = [
             <li data-passo={i} aria-current={i === 0 ? 'step' : undefined}>
               <span class="perola" data-size={i}></span>
               <span class="rotulos"><strong>{t}</strong><small>{s}</small></span>
-              <span class="feito" aria-hidden="true"><Icons name="check" size={14} /></span>
+              <span class="tick" aria-hidden="true"><Icons name="check" size={14} /></span>
             </li>
           ))}
         </ol>
@@ -327,8 +327,8 @@ const CAPS = [
     .progresso .rotulos small { display: block; font-size: 12px; color: var(--tinta-apagada); }
     .progresso li[aria-current] strong { font-weight: 600; color: var(--tinta); }
     .progresso li.feito strong { color: var(--tinta); }
-    .progresso .feito { margin-left: auto; color: var(--ouro-texto); display: none; }
-    .progresso li.feito .feito { display: inline-flex; }
+    .progresso .tick { margin-left: auto; color: var(--ouro-texto); display: none; }
+    .progresso li.feito .tick { display: inline-flex; }
     .rail .texto { font-size: 13px; max-width: 300px; }
     .tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .servicos { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 560px; }
