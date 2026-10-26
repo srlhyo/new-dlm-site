@@ -7,3 +7,6 @@
 
 # As variáveis PUBLIC_* definem-se no painel do Netlify (Site configuration → Environment variables);
 # ver .env.example. Os cabeçalhos de cache vivem em public/_headers.
+# PUBLIC_SUPABASE_URL / PUBLIC_SUPABASE_ANON_KEY têm valores por contexto: Production → Supabase de produção
+# (uwhjblijvbscyzopeaiu); Deploy Previews, Branch deploys e Local development → staging. O astro.config.mjs
+# recusa o build se o contexto e o projecto não baterem certo.

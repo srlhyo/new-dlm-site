@@ -60,7 +60,10 @@ src/scripts/pedido.js o fluxo de pedido de orçamento (capítulos, validação, 
 ## Publicar
 
 Build estático — Netlify, Vercel ou qualquer alojamento de ficheiros.
-`public/_headers` traz a cache dos assets para Netlify. Antes de publicar:
+`public/_headers` traz a cache dos assets para Netlify. O Supabase de produção
+(`uwhjblijvbscyzopeaiu`) só é aceite quando `CONTEXT=production` (o deploy de
+produção do Netlify); local, deploy previews e branch deploys usam staging — o
+`astro.config.mjs` falha o build se não for assim. Antes de publicar:
 preencher `.env` no alojamento, indicar o número de WhatsApp e a conta de
 Instagram, substituir os textos entre `[parênteses rectos]` (testemunhos,
 privacidade) e confirmar as fotografias atribuídas a batizado, noivado e chá
